@@ -45,6 +45,7 @@ Accessing reliable consultancy services is often challenging due to geographical
   - Knex.js for query building
   - JWT for authentication
   - WebRTC for real-time video consultations
+  - Socket.IO
 
 ### APIs
 
@@ -53,24 +54,25 @@ Accessing reliable consultancy services is often challenging due to geographical
 ### Sitemap
 
 - Home
-- Consultant Search
-- Consultant Profile
+- Client Dashboard
+- Consultant Dashboard
 - Appointment Scheduler
 - Video Consultation
+- Sign in and Sign up
 
 ### Mockups
 
 #### Home Page
-![Home Page](home-page-mockup.jpg)
+![Home Page](./readme/home-page-mockup.jpg)
 
 #### Consultant Profile
-![Consultant Profile](consultant-profile-mockup.jpg)
+![Consultant Profile](./readme/consultant-profile-mockup.jpg)
 
 #### Appointment Scheduler
-![Appointment Scheduler](appointment-scheduler-mockup.jpg)
+![Appointment Scheduler](./readme/appointment-scheduler-mockup.jpg)
 
 #### Video Consultation
-![Video Consultation](video-consultation-mockup.jpg)
+![Video Consultation](./readme/video-consultation-mockup.jpg)
 
 ### Data Structure
 
@@ -80,10 +82,6 @@ Accessing reliable consultancy services is often challenging due to geographical
   - email
   - password
   - role (consultant or client)
-- **Consultants Table**:
-  - user_id (foreign key to Users Table)
-  - expertise
-  - availability
 - **Appointments Table**:
   - client_id
   - consultant_id
@@ -108,7 +106,7 @@ Accessing reliable consultancy services is often challenging due to geographical
 
 - Book an appointment with a consultant
 
-**POST /video/connect**
+**WS /video/connect**
 
 - Initiate a WebRTC connection for video consultation
 
@@ -134,3 +132,23 @@ Accessing reliable consultancy services is often challenging due to geographical
 - **Multi-language Support**: Expand accessibility through multiple language options
 
 This proposal aims to create an adaptable and user-friendly consulting platform, facilitating efficient communication, scheduling, and consultations between consultants and clients. While the initial focus is on core functionalities, the potential future additions pave the way for a more comprehensive and feature-rich platform.
+
+
+# Installation
+
+1. Update `/server/knexfile.js` with your database credentials.
+
+2. Create a database called `consultify`, or update `/server/knexfile.js` with the name of a newly created database of your choosing.
+
+3. Open two terminals.
+
+4. In first terminal, run:
+    - `cd client`
+    - `npm i`
+    - `npm run build`
+
+5. In second terminal, run:
+    - `cd server`
+    - `npm i`
+    - `npm run migrate`
+    - `npm run dev`

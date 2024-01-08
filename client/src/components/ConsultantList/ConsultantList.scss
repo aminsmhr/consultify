@@ -1,0 +1,70 @@
+@import '../../Style/variables';
+
+.make-appointment__title {
+  font-size: 1.5rem;
+  text-align: center;
+  margin-bottom: 1.5rem;
+  color: $text-color;
+}
+.consultant-list {
+  display: flex;
+  margin-top: 1rem;
+  flex-direction: column;
+  width: 100%;
+  max-width: 600px;
+  padding: 1rem;
+  border-radius: 8px;
+  border: thin solid #ddd;
+  background-color: $text-color-light;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.grid-container {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+.striped-row {
+  background-color: $secondary-color;
+  border: 1px solid $accent-color;
+  border-radius: 8px;
+  padding: 10px;
+  margin: 5px;
+  flex-basis: 100%;
+  display: flex;
+
+  &:nth-child(odd) {
+    background-color: $text-color-light;
+  }
+}
+
+.row-data {
+  flex-grow: 1;
+  line-height: 2rem;
+  margin: 0;
+  color: $text-color; 
+}
+
+.status-message {
+  line-height: 2rem;
+  margin: 0;
+  color: $text-color; 
+}
+
+button.book-appointment {
+  cursor: pointer;
+  max-height: 2rem;
+  background-color: $eco-color; 
+  color: $text-color-light; 
+  border: none;
+  padding: 0.3125rem 0.625rem;
+  border-radius: 0.25rem;
+  width: 10rem;
+  font-size: 1rem;
+  transition: background-color 0.3s ease;
+
+  &:hover {
+    background-color: $hover-color; 
+  }
+}

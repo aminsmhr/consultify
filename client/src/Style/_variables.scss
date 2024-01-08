@@ -1,0 +1,27 @@
+// _variables.scss
+
+// Color Palette
+$primary-color: #5b88a7; 
+$secondary-color: #f2f2f2; 
+$accent-color: #e1e1e1; 
+$text-color: #333333; 
+$text-color-light: #ffffff; 
+$info-color: #17a2b8; 
+$success-color: #28a745; 
+$warning-color: #ffc107; 
+$danger-color: #dc3545; 
+$eco-color: #0056b3; 
+$eco-color1: #1358db; 
+$eco-color2: #003fc2; 
+$hover-color: darken($primary-color, 10%); 
+
+
+// Typography
+$font-stack: 'Helvetica Neue', Helvetica, Arial, sans-serif; 
+$font-size-root: 1rem; 
+$heading-font-weight: 600; 
+$body-font-weight: 400; 
+$line-height-base: 1.6; 
+
+// Spacing
+$spacing-unit: 0.5rem; 

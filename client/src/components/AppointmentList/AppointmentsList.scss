@@ -1,0 +1,87 @@
+// AppointmentsList.scss
+@import '../../Style/variables';
+
+.appointments-list {
+  width: 100%;
+  max-width: 37.5rem;
+  background-color: $text-color-light;
+  border: thin solid #ddd;
+  padding: 0.3125rem 0.625rem;
+  border-radius: 0.25rem;
+  box-shadow: 0 0.25rem 0.5rem rgba(0, 0, 0, 0.1);
+  transition: background-color 0.3s ease;
+
+  .appointments-title {
+    color: $text-color; 
+    margin-bottom: 1.25rem;
+  }
+
+  .appointments-container {
+    list-style: none;
+    padding: 0;
+
+    .appointment-item {
+      background: $secondary-color; 
+      border: 0.0625rem solid $accent-color; 
+      padding: 0.9375rem;
+      margin-bottom: 0.625rem;
+      border-radius: 0.25rem;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+
+      .appointment-details {
+        margin-bottom: 0.625rem; 
+      }
+
+      .appointment-actions {
+        display: flex;
+        width: 100%; 
+
+        button {
+          flex: 1; 
+          margin-right: 0.625rem; 
+          padding: 0.3125rem 0.9375rem;
+          border: none;
+          border-radius: 0.25rem;
+          cursor: pointer;
+          transition: background-color 0.2s;
+
+          &:last-child {
+            margin-right: 0; 
+          }
+          
+          &.btn-join {
+            background-color: $primary-color; 
+            color: $text-color-light; 
+
+            &:hover {
+              background-color: darken($primary-color, 5%);
+            }
+          }
+
+          &.btn-accept {
+            background-color: $info-color; 
+
+            &:hover {
+              background-color: darken($info-color, 5%);
+            }
+          }
+
+          &.btn-cancel {
+            background-color: $danger-color; 
+            color: $text-color-light; 
+
+            &:hover {
+              background-color: darken($danger-color, 5%);
+            }
+          }
+        }
+      }
+    }
+  }
+
+  .no-appointments, .loading {
+    color: $text-color; 
+  }
+}

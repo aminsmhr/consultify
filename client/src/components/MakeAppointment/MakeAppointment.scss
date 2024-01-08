@@ -1,0 +1,56 @@
+// MakeAppointment.scss
+
+.make-appointment { // Block
+    width: 100%; // or fixed width, depending on your design
+    max-width: 600px;
+    margin: 1rem auto;
+    padding: 2rem;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  
+    &__title { // Element
+      font-size: 1.5rem;
+      text-align: center;
+      margin-bottom: 1.5rem;
+      color: #333;
+    }
+  
+    &__form { // Element
+      display: flex;
+      flex-direction: column;
+    }
+  
+    &__label { // Element
+      margin-bottom: 1rem;
+      color: #666;
+    }
+  
+    &__input, // Element
+    &__select { // Element
+      padding: 0.75rem;
+      margin-bottom: 1rem;
+      margin-left: 1rem;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+  
+      &--error { // Modifier
+        border-color: red;
+      }
+    }
+  
+    &__button { // Element
+      padding: 0.75rem 1rem;
+      background-color: #0056b3;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+  
+      &:hover { // Pseudo-class
+        background-color: #003d82;
+      }
+    }
+  }
+  

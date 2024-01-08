@@ -1,0 +1,18 @@
+@import '../../Style/variables';
+
+.field {
+    display: flex;
+    flex-direction: column;
+
+    &__label {
+        margin-bottom: 0.5rem;
+    }
+
+    &__input {
+        margin-bottom: 1rem;
+        border: 1px solid $accent-color;
+        border-radius: 0.5rem;
+        padding: 0.5rem;
+        font-size: inherit;
+    }
+}
