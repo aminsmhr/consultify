@@ -1,0 +1,104 @@
+openapi: 3.0.0
+info:
+  title: Hello World
+  version: 1.0.0
+servers:
+  - url: http://localhost:3000/api
+    description: Local server
+paths:
+  /user/register:
+    post:
+      summary: Creates a new user
+      description: Registers a new user with their personal details
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - first_name
+                - last_name
+                - email
+                - password
+              properties:
+                first_name:
+                  type: string
+                last_name:
+                  type: string
+                phone:
+                  type: string
+                address:
+                  type: string
+                email:
+                  type: string
+                password:
+                  type: string
+                role:
+                  type: string
+      responses:
+        '201':
+          description: Registered Successfully
+        '400':
+          description: Invalid input
+  /user/login:
+    post:
+      summary: User login
+      description: Logs in the user and returns a JWT token
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - email
+                - password
+              properties:
+                email:
+                  type: string
+                password:
+                  type: string
+      responses:
+        '200':
+          description: Login successful
+        '400':
+          description: Invalid credentials
+  /appointments/list:
+    get:
+      summary: List all appointments for the current user
+      description: Retrieves a list of appointments associated with the current user
+      responses:
+        '200':
+          description: A list of appointments
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Appointment'
+        '500':
+          description: Server error
+components:
+  schemas:
+    Appointment:
+      type: object
+      properties:
+        consultantId:
+          type: integer
+        clientFirstName:
+          type: string
+        clientLastName:
+          type: string
+        consultantFirstName:
+          type: string
+        consultantLastName:
+          type: string
+        appointmentDateTime:
+          type: string
+        appointmentStatus:
+          type: string
+        clientSocketId:
+          type: string
+        consultantSocketId:
+          type: string
