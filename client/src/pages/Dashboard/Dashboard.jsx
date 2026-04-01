@@ -4,6 +4,7 @@ import MakeAppointment from "../../components/MakeAppointment/MakeAppointment";
 import ConsultantList from "../../components/ConsultantList/ConsultantList";
 import axios from "axios";
 import AppointmentsList from "../../components/AppointmentList/AppointmentsList";
+import { getServerUrl } from "../../lib/serverUrl";
 
 function Dashboard({ token, handleLogout }) {
   const [profile, setProfile] = useState(null);
@@ -11,7 +12,7 @@ function Dashboard({ token, handleLogout }) {
   const [consultants, setConsultants] = useState([]);
   const [appointmentMade, setAppointmentMade] = useState(false);
 
-  const serverUrl = import.meta.env.VITE_SERVER_URL || 'http://localhost:8080';
+  const serverUrl = getServerUrl();
 
   useEffect(() => {
     (async ()=> await fetchConsultants())();

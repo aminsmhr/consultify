@@ -2,12 +2,13 @@ import "./Signup.scss";
 import { useState } from "react";
 import axios from "axios";
 import Input from "../../components/Input/Input";
+import { getServerUrl } from "../../lib/serverUrl";
 
 function Signup({ changeToLogin }) {
   const [error, setError] = useState("");
   const [success, setSuccess] = useState(false);
   const [role, setRole] = useState('client');
-  const serverUrl = import.meta.env.VITE_SERVER_URL || 'http://localhost:8080';
+  const serverUrl = getServerUrl();
 
   const handleSubmit = (event) => {
     event.preventDefault();

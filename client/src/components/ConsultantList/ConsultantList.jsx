@@ -2,12 +2,13 @@ import axios from 'axios';
 import React , {useEffect, useState} from 'react';
 import { Navigate } from "react-router-dom";
 import './ConsultantList.scss'; 
+import { getServerUrl } from "../../lib/serverUrl";
 
 function ConsultantList({token, reload}) {
     const [isLoading, setIsLoading] = useState(true);
     const [appointments, setAppointments] = useState([]);
     const [redirecting, setRedirecting] = useState({state:false, appointmentId:0});
-    const serverUrl = import.meta.env.VITE_SERVER_URL || 'http://localhost:8080';
+    const serverUrl = getServerUrl();
 
     const formatDate = (dateString) => {
       const options = {year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' };

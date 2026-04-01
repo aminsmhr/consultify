@@ -4,6 +4,7 @@ import axios from 'axios';
 import './VideoCall.scss';
 import io from 'socket.io-client';
 import { useNavigate } from 'react-router-dom';
+import { getServerUrl } from '../../lib/serverUrl';
 
 const VideoCall = ({ serverUrlProp }) => {
   const navigate = useNavigate();
@@ -44,7 +45,7 @@ const VideoCall = ({ serverUrlProp }) => {
 
   const location = useLocation();
   const { token, appointmentId, type: userType } = location.state || {}; 
-  const serverUrl = import.meta.env.VITE_SERVER_URL || serverUrlProp;
+  const serverUrl = import.meta.env.VITE_SERVER_URL || serverUrlProp || getServerUrl();
 
 
   useEffect(() => {

@@ -4,10 +4,11 @@ import Header from "./components/Header/Header";
 import VideoCall from "./components/VideoCall/VideoCall";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { useState } from "react";
+import { getServerUrl } from "./lib/serverUrl";
 
 function App() {
   const [token, setToken] = useState(sessionStorage.getItem("token"));
-  const serverUrl = import.meta.env.VITE_SERVER_URL || 'http://localhost:8080';
+  const serverUrl = getServerUrl();
 
   const handleLogin = (token) => {
     sessionStorage.setItem("token", token);

@@ -1,12 +1,13 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import "./MakeAppointment.scss"; // Assuming this file exists and styles the form
+import { getServerUrl } from "../../lib/serverUrl";
 
 const MakeAppointment = ({ consultants, token, onAppointmentMade }) => {
   const [selectedConsultant, setSelectedConsultant] = useState('');
   const [dateTime, setDateTime] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-  const serverUrl = import.meta.env.VITE_SERVER_URL || 'http://localhost:8080';
+  const serverUrl = getServerUrl();
 
   const requestAppointment = async (data) => {
     try {

@@ -3,11 +3,12 @@ import Input from "../../components/Input/Input";
 import axios from "axios";
 import { useState } from 'react';
 import Signup from '../Signup/Signup';
+import { getServerUrl } from '../../lib/serverUrl';
 
 function Login({ handleLogin }) {
     const [view, setView] = useState("login");
     const [error, setError] = useState(false);
-    const serverUrl = import.meta.env.VITE_SERVER_URL || 'http://localhost:8080';
+    const serverUrl = getServerUrl();
 
     if (view === "signup") {
         return <Signup changeToLogin={() => setView("login")}/>
