@@ -177,6 +177,18 @@ Add these repository secrets before using it:
 - `DEPLOY_CLIENT_ENV`: optional full contents of `client/.env`
 - `DEPLOY_PM2_APP_NAME`: PM2 process name, for example `consultify`
 
+Example `DEPLOY_SERVER_ENV` for production:
+
+```env
+JWT_SECRET=replace-with-a-long-random-secret
+PORT=8001
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_USER=your_mysql_user
+DB_PASSWORD=your_mysql_password
+DB_NAME=consultify
+```
+
 Server assumptions:
 
 - Node.js and npm are installed
