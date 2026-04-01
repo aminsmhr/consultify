@@ -8,8 +8,8 @@ const https = require(`https`);
 const swaggerUi = require('swagger-ui-express');
 const YAML = require('yamljs');
 const swaggerJSDoc = require('swagger-jsdoc');
-const swaggerDocument = YAML.load('./swagger.yaml');
 const fs = require('fs');
+const swaggerDocument = YAML.load(path.join(__dirname, 'swagger.yaml'));
 app.use(express.static(path.join(__dirname, 'build')));
 
 const userRoutes = require("./routes/user");
@@ -59,8 +59,8 @@ const options = {
 const swaggerSpec = swaggerJSDoc(options);
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
-const keyPath = '../certs/localhost-key.pem';
-const certPath = '../certs/localhost.pem';
+const keyPath = path.join(__dirname, '..', 'certs', 'localhost-key.pem');
+const certPath = path.join(__dirname, '..', 'certs', 'localhost.pem');
 
 const server = https.createServer(  {
   key: fs.readFileSync(keyPath),
