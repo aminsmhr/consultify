@@ -114,7 +114,11 @@ router.post("/register", async (req, res) => {
     await knex("users").insert(newUser);
     res.status(201).send("Registered!");
   } catch (e) {
-    res.status(400).send("failed reg", e);
+    console.error(e);
+    res.status(400).json({
+      error: "failed reg",
+      message: e.message,
+    });
   }
 });
 
