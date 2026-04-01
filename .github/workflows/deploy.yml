@@ -41,16 +41,26 @@ jobs:
           CLIENT_ENV: ${{ secrets.DEPLOY_CLIENT_ENV }}
           SERVER_ENV: ${{ secrets.DEPLOY_SERVER_ENV }}
           APP_NAME: ${{ secrets.DEPLOY_PM2_APP_NAME }}
+          NODE_VERSION: ${{ secrets.DEPLOY_NODE_VERSION }}
         with:
           host: ${{ secrets.DEPLOY_HOST }}
           username: ${{ secrets.DEPLOY_USER }}
           key: ${{ secrets.DEPLOY_SSH_KEY }}
           port: ${{ secrets.DEPLOY_PORT || '22' }}
-          envs: DEPLOY_PATH,CLIENT_ENV,SERVER_ENV,APP_NAME
+          envs: DEPLOY_PATH,CLIENT_ENV,SERVER_ENV,APP_NAME,NODE_VERSION
           script: |
             set -e
 
             cd "$DEPLOY_PATH"
+
+            export NVM_DIR="$HOME/.nvm"
+            if [ -s "$NVM_DIR/nvm.sh" ]; then
+              . "$NVM_DIR/nvm.sh"
+              nvm use "${NODE_VERSION:-22}"
+            fi
+
+            node -v
+            npm -v
 
             if [ -n "$CLIENT_ENV" ]; then
               printf "%s" "$CLIENT_ENV" > client/.env
