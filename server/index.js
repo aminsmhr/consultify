@@ -6,10 +6,8 @@ const path = require('path');
 const http = require('http');
 const https = require(`https`);
 const swaggerUi = require('swagger-ui-express');
-const YAML = require('yamljs');
 const swaggerJSDoc = require('swagger-jsdoc');
 const fs = require('fs');
-const swaggerDocument = YAML.load(path.join(__dirname, 'swagger.yaml'));
 app.use(express.static(path.join(__dirname, 'build')));
 
 const userRoutes = require("./routes/user");
@@ -26,36 +24,30 @@ app.use(express.json());
 const swaggerDefinition = {
   openapi: '3.0.0',
   info: {
-    title: 'Express API for JSONPlaceholder',
+    title: 'Consultify API',
     version: '1.0.0',
-    description:
-      'This is a REST API application made with Express. It retrieves data from JSONPlaceholder.',
+    description: 'API for user authentication, consultant lookup, and appointment management.',
     license: {
       name: 'Licensed Under MIT',
       url: 'https://spdx.org/licenses/MIT.html',
     },
     contact: {
-      name: 'JSONPlaceholder',
-      url: 'https://jsonplaceholder.typicode.com',
+      name: 'Consultify',
     },
   },
   servers: [
     {
-      url: 'http://localhost:8001',
-      description: 'Development server',
+      url: '/',
+      description: 'Current server',
     },
   ],
 };
 
-// Options for the swagger docs
 const options = {
-  // Import swaggerDefinitions
   swaggerDefinition,
-  // Path to the API docs
-  apis: ['./routes/*.js'], // <-- Notation for your endpoint's file
+  apis: [path.join(__dirname, 'routes', '*.js')],
 };
 
-// Initialize swagger-jsdoc -> returns validated swagger spec in json format
 const swaggerSpec = swaggerJSDoc(options);
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
