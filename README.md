@@ -152,3 +152,34 @@ This proposal aims to create an adaptable and user-friendly consulting platform,
     - `npm i`
     - `npm run migrate`
     - `npm run dev`
+
+# GitHub Actions Deployment
+
+This repo includes a GitHub Actions workflow at [deploy.yml](./.github/workflows/deploy.yml) that can deploy to the same SSH server used for `nimadrivingschool.com`.
+
+It does the following on every push to `proposal`, `main`, or `master`, and also supports manual runs:
+
+- Copies the repository to the target server directory over SSH
+- Writes `client/.env` and `server/.env` from GitHub Secrets if provided
+- Runs `npm ci` in `server` and `client`
+- Runs `npm run migrate` in `server`
+- Runs `npm run build` in `client`
+- Restarts the app with PM2
+
+Add these repository secrets before using it:
+
+- `DEPLOY_HOST`: server hostname or IP
+- `DEPLOY_PORT`: SSH port, usually `22`
+- `DEPLOY_USER`: SSH user
+- `DEPLOY_SSH_KEY`: private SSH key for the server
+- `DEPLOY_PATH`: absolute path where this app should live on the server
+- `DEPLOY_SERVER_ENV`: full contents of `server/.env`
+- `DEPLOY_CLIENT_ENV`: optional full contents of `client/.env`
+- `DEPLOY_PM2_APP_NAME`: PM2 process name, for example `consultify`
+
+Server assumptions:
+
+- Node.js and npm are installed
+- PM2 is installed globally
+- The target path exists or can be created by the SSH user
+- MySQL is reachable from the server using the values in `server/.env` and `server/knexfile.js`

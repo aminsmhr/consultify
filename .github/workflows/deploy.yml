@@ -1,0 +1,83 @@
+name: Deploy
+
+on:
+  push:
+    branches:
+      - proposal
+      - main
+      - master
+  workflow_dispatch:
+
+concurrency:
+  group: consultify-deploy
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Copy project to server
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.DEPLOY_HOST }}
+          username: ${{ secrets.DEPLOY_USER }}
+          key: ${{ secrets.DEPLOY_SSH_KEY }}
+          port: ${{ secrets.DEPLOY_PORT || '22' }}
+          source: "README.md,certs,client,server"
+          target: ${{ secrets.DEPLOY_PATH }}
+          overwrite: true
+          strip_components: 0
+          rm: false
+          tar_dereference: true
+
+      - name: Build and restart on server
+        uses: appleboy/ssh-action@v1.0.3
+        env:
+          DEPLOY_PATH: ${{ secrets.DEPLOY_PATH }}
+          CLIENT_ENV: ${{ secrets.DEPLOY_CLIENT_ENV }}
+          SERVER_ENV: ${{ secrets.DEPLOY_SERVER_ENV }}
+          APP_NAME: ${{ secrets.DEPLOY_PM2_APP_NAME }}
+        with:
+          host: ${{ secrets.DEPLOY_HOST }}
+          username: ${{ secrets.DEPLOY_USER }}
+          key: ${{ secrets.DEPLOY_SSH_KEY }}
+          port: ${{ secrets.DEPLOY_PORT || '22' }}
+          envs: DEPLOY_PATH,CLIENT_ENV,SERVER_ENV,APP_NAME
+          script: |
+            set -e
+
+            cd "$DEPLOY_PATH"
+
+            if [ -n "$CLIENT_ENV" ]; then
+              printf "%s" "$CLIENT_ENV" > client/.env
+            fi
+
+            if [ -n "$SERVER_ENV" ]; then
+              printf "%s" "$SERVER_ENV" > server/.env
+            fi
+
+            cd server
+            npm ci
+            npm run migrate
+            cd ..
+
+            cd client
+            npm ci
+            npm run build
+            cd ..
+
+            if command -v pm2 >/dev/null 2>&1; then
+              if [ -n "$APP_NAME" ] && pm2 describe "$APP_NAME" >/dev/null 2>&1; then
+                pm2 restart "$APP_NAME" --update-env
+              else
+                pm2 start server/index.js --name "${APP_NAME:-consultify}" --update-env
+              fi
+              pm2 save
+            else
+              echo "pm2 is not installed on the server. Install pm2 or restart the app manually."
+              exit 1
+            fi
