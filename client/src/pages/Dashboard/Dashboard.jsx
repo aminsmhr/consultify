@@ -16,6 +16,7 @@ function Dashboard({ token, handleLogout }) {
   const [appointmentMade, setAppointmentMade] = useState(false);
   const [joinNotifications, setJoinNotifications] = useState([]);
   const [activeJoinStates, setActiveJoinStates] = useState([]);
+  const [activeTab, setActiveTab] = useState("overview");
   const previousAppointmentState = useRef({});
   const navigate = useNavigate();
 
@@ -25,6 +26,14 @@ function Dashboard({ token, handleLogout }) {
     (async ()=> await fetchConsultants())();
     fetchProfile();
   }, []);
+
+  useEffect(() => {
+    if (!profile) {
+      return;
+    }
+
+    setActiveTab(String(profile.type) === "0" ? "clients" : "consultants");
+  }, [profile]);
 
   useEffect(() => {
     if (!profile) {
@@ -271,22 +280,85 @@ function Dashboard({ token, handleLogout }) {
           </button>
         </div>
       </section>}
-      {profile && profile.type === 1 ? (
-        <>
-          <MakeAppointment
-            consultants={consultants}
-            token={token}
-            onAppointmentMade={eventAppointmentMade}
-          />
-          <ConsultantList token={token} reload={appointmentMade} />
-          <ClientWorkspace token={token} profile={profile} />
-        </>
-      ) : (
-        <>
-          <AppointmentsList token={token} />
-          <ClientWorkspace token={token} profile={profile} />
-        </>
-      )}
+      {profile ? (
+        <section className="dashboard__tabs">
+          <div className="dashboard__tab-list">
+            {String(profile.type) === "0" ? (
+              <>
+                <button
+                  className={`dashboard__tab ${activeTab === "clients" ? "dashboard__tab--active" : ""}`}
+                  onClick={() => setActiveTab("clients")}
+                >
+                  Clients
+                </button>
+                <button
+                  className={`dashboard__tab ${activeTab === "meetings" ? "dashboard__tab--active" : ""}`}
+                  onClick={() => setActiveTab("meetings")}
+                >
+                  Meetings
+                </button>
+                <button
+                  className={`dashboard__tab ${activeTab === "messages" ? "dashboard__tab--active" : ""}`}
+                  onClick={() => setActiveTab("messages")}
+                >
+                  Emails
+                </button>
+              </>
+            ) : (
+              <>
+                <button
+                  className={`dashboard__tab ${activeTab === "consultants" ? "dashboard__tab--active" : ""}`}
+                  onClick={() => setActiveTab("consultants")}
+                >
+                  Consultants
+                </button>
+                <button
+                  className={`dashboard__tab ${activeTab === "meetings" ? "dashboard__tab--active" : ""}`}
+                  onClick={() => setActiveTab("meetings")}
+                >
+                  Meetings
+                </button>
+                <button
+                  className={`dashboard__tab ${activeTab === "messages" ? "dashboard__tab--active" : ""}`}
+                  onClick={() => setActiveTab("messages")}
+                >
+                  Emails
+                </button>
+              </>
+            )}
+          </div>
+
+          <div className="dashboard__tab-panel">
+            {String(profile.type) === "0" ? (
+              <>
+                {activeTab === "clients" ? (
+                  <ClientWorkspace token={token} profile={profile} mode="clients" />
+                ) : null}
+                {activeTab === "meetings" ? <AppointmentsList token={token} /> : null}
+                {activeTab === "messages" ? (
+                  <ClientWorkspace token={token} profile={profile} mode="messages" />
+                ) : null}
+              </>
+            ) : (
+              <>
+                {activeTab === "consultants" ? (
+                  <>
+                    <MakeAppointment
+                      consultants={consultants}
+                      token={token}
+                      onAppointmentMade={eventAppointmentMade}
+                    />
+                  </>
+                ) : null}
+                {activeTab === "meetings" ? <ConsultantList token={token} reload={appointmentMade} /> : null}
+                {activeTab === "messages" ? (
+                  <ClientWorkspace token={token} profile={profile} mode="messages" />
+                ) : null}
+              </>
+            )}
+          </div>
+        </section>
+      ) : null}
      </main>
   );
 }

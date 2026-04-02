@@ -3,7 +3,7 @@ import { useEffect, useMemo, useState } from "react";
 import axios from "axios";
 import { getServerUrl } from "../../lib/serverUrl";
 
-function ClientWorkspace({ token, profile }) {
+function ClientWorkspace({ token, profile, mode = "messages" }) {
   const serverUrl = getServerUrl();
   const [contacts, setContacts] = useState([]);
   const [selectedContactId, setSelectedContactId] = useState(null);
@@ -27,13 +27,30 @@ function ClientWorkspace({ token, profile }) {
 
   const isConsultant = String(profile?.type) === "0";
 
+  const panelCopy = {
+    clients: {
+      eyebrow: isConsultant ? "Client management" : "Consultant directory",
+      title: isConsultant ? "See every client at a glance" : "Your consultant relationships",
+      empty: isConsultant
+        ? "No clients yet. Accepted appointments will populate this list."
+        : "No consultant relationships yet. Book a session to start one.",
+    },
+    messages: {
+      eyebrow: "Emails and files",
+      title: isConsultant ? "Send updates, files, and follow-ups" : "Review messages and reply with files",
+      empty: "No conversations yet. Once an appointment exists, messages will appear here.",
+    },
+  };
+
+  const copy = panelCopy[mode] || panelCopy.messages;
+
   const fetchContacts = async () => {
     try {
       setIsLoadingContacts(true);
       const { data } = await axios.get(`${serverUrl}/api/client-workspace/contacts`, authConfig);
       setContacts(data);
-      if (data.length && !selectedContactId) {
-        setSelectedContactId(data[0].id);
+      if (data.length) {
+        setSelectedContactId((current) => current || data[0].id);
       }
     } catch (fetchError) {
       console.error(fetchError);
@@ -46,6 +63,7 @@ function ClientWorkspace({ token, profile }) {
   const fetchConversation = async (contactId) => {
     if (!contactId) {
       setConversation(null);
+      setNoteText("");
       return;
     }
 
@@ -72,6 +90,8 @@ function ClientWorkspace({ token, profile }) {
   useEffect(() => {
     fetchConversation(selectedContactId);
   }, [selectedContactId]);
+
+  const selectedContact = contacts.find((contact) => contact.id === selectedContactId) || null;
 
   const handleFileChange = (event) => {
     setComposer((current) => ({
@@ -131,7 +151,7 @@ function ClientWorkspace({ token, profile }) {
         { noteText },
         authConfig
       );
-      await fetchContacts();
+      await Promise.all([fetchContacts(), fetchConversation(selectedContactId)]);
     } catch (saveError) {
       console.error(saveError);
       setError("Failed to save note.");
@@ -144,12 +164,13 @@ function ClientWorkspace({ token, profile }) {
     <section className="client-workspace">
       <div className="client-workspace__header">
         <div>
-          <p className="client-workspace__eyebrow">
-            {isConsultant ? "Client management" : "Messages and files"}
-          </p>
-          <h2>{isConsultant ? "Manage clients, notes, and attachments" : "Stay in touch with your consultants"}</h2>
+          <p className="client-workspace__eyebrow">{copy.eyebrow}</p>
+          <h2>{copy.title}</h2>
         </div>
-        <button className="client-workspace__refresh" onClick={() => Promise.all([fetchContacts(), fetchConversation(selectedContactId)])}>
+        <button
+          className="client-workspace__refresh"
+          onClick={() => Promise.all([fetchContacts(), fetchConversation(selectedContactId)])}
+        >
           Refresh
         </button>
       </div>
@@ -169,125 +190,165 @@ function ClientWorkspace({ token, profile }) {
                 >
                   <strong>{contact.first_name} {contact.last_name}</strong>
                   <span>{contact.email}</span>
-                  {contact.latestMessageSubject ? (
-                    <small>{contact.latestMessageSubject}</small>
+                  {mode === "messages" ? (
+                    contact.latestMessageSubject ? (
+                      <small>{contact.latestMessageSubject}</small>
+                    ) : (
+                      <small>No messages yet</small>
+                    )
                   ) : (
-                    <small>No messages yet</small>
+                    <small>
+                      {contact.noteText
+                        ? "Private note saved"
+                        : isConsultant
+                          ? "No notes yet"
+                          : "View shared activity"}
+                    </small>
                   )}
-                  {contact.unreadCount ? <em>{contact.unreadCount} new</em> : null}
+                  {mode === "messages" && contact.unreadCount ? <em>{contact.unreadCount} new</em> : null}
                 </button>
               ))}
             </div>
           ) : (
-            <p className="client-workspace__empty">
-              {isConsultant
-                ? "No clients yet. Accepted appointments will create your client workspace."
-                : "No consultant conversations yet. Once an appointment exists, messages will appear here."}
-            </p>
+            <p className="client-workspace__empty">{copy.empty}</p>
           )}
         </aside>
 
         <div className="client-workspace__main">
-          {selectedContactId && conversation ? (
+          {selectedContact && conversation ? (
             <>
               <div className="client-workspace__thread-header">
                 <div>
-                  <h3>{conversation.contact.first_name} {conversation.contact.last_name}</h3>
-                  <p>{conversation.contact.email}</p>
+                  <h3>{selectedContact.first_name} {selectedContact.last_name}</h3>
+                  <p>{selectedContact.email}</p>
                 </div>
               </div>
 
-              {isConsultant ? (
-                <div className="client-workspace__note-card">
-                  <div className="client-workspace__section-title">
-                    <h4>Private consultant notes</h4>
-                    <button onClick={handleSaveNote} disabled={isSavingNote}>
-                      {isSavingNote ? "Saving..." : "Save note"}
-                    </button>
+              {mode === "clients" ? (
+                <div className="client-workspace__client-card">
+                  <div className="client-workspace__client-grid">
+                    <article>
+                      <span>Email</span>
+                      <strong>{selectedContact.email}</strong>
+                    </article>
+                    <article>
+                      <span>Unread messages</span>
+                      <strong>{selectedContact.unreadCount || 0}</strong>
+                    </article>
+                    <article>
+                      <span>Latest message</span>
+                      <strong>{selectedContact.latestMessageSubject || "No message subject yet"}</strong>
+                    </article>
+                    <article>
+                      <span>Last activity</span>
+                      <strong>
+                        {selectedContact.latestMessageAt
+                          ? new Date(selectedContact.latestMessageAt).toLocaleString()
+                          : "No activity yet"}
+                      </strong>
+                    </article>
                   </div>
-                  <textarea
-                    value={noteText}
-                    onChange={(event) => setNoteText(event.target.value)}
-                    placeholder="Store observations, follow-ups, and reminders for this client."
-                  />
-                </div>
-              ) : null}
 
-              <div className="client-workspace__thread">
-                <div className="client-workspace__messages">
-                  {isLoadingConversation ? (
-                    <p className="client-workspace__empty">Loading conversation...</p>
-                  ) : conversation.messages.length ? (
-                    conversation.messages.map((message) => (
-                      <article
-                        key={message.id}
-                        className={`client-workspace__message ${message.senderId === profile.id ? "client-workspace__message--outgoing" : "client-workspace__message--incoming"}`}
-                      >
-                        {message.subject ? <h4>{message.subject}</h4> : null}
-                        <p>{message.body}</p>
-                        {message.attachments?.length ? (
-                          <div className="client-workspace__attachments">
-                            {message.attachments.map((attachment) => (
-                              <a
-                                key={attachment.id}
-                                href={`${serverUrl}/api/client-workspace/attachments/${attachment.id}`}
-                                target="_blank"
-                                rel="noreferrer"
-                              >
-                                {attachment.originalName}
-                              </a>
-                            ))}
-                          </div>
-                        ) : null}
-                        <small>{new Date(message.createdAt).toLocaleString()}</small>
-                      </article>
-                    ))
+                  {isConsultant ? (
+                    <div className="client-workspace__note-card">
+                      <div className="client-workspace__section-title">
+                        <h4>Private consultant notes</h4>
+                        <button onClick={handleSaveNote} disabled={isSavingNote}>
+                          {isSavingNote ? "Saving..." : "Save note"}
+                        </button>
+                      </div>
+                      <textarea
+                        value={noteText}
+                        onChange={(event) => setNoteText(event.target.value)}
+                        placeholder="Store observations, follow-ups, and reminders for this client."
+                      />
+                    </div>
                   ) : (
-                    <p className="client-workspace__empty">No messages yet. Start the conversation below.</p>
+                    <div className="client-workspace__client-summary">
+                      <p>
+                        This panel keeps the relationship view separate from your message inbox. Switch to
+                        the Messages tab to read and send files.
+                      </p>
+                    </div>
                   )}
                 </div>
-
-                <form className="client-workspace__composer" onSubmit={handleSendMessage}>
-                  <div className="client-workspace__section-title">
-                    <h4>New message</h4>
+              ) : (
+                <div className="client-workspace__thread">
+                  <div className="client-workspace__messages">
+                    {isLoadingConversation ? (
+                      <p className="client-workspace__empty">Loading conversation...</p>
+                    ) : conversation.messages.length ? (
+                      conversation.messages.map((message) => (
+                        <article
+                          key={message.id}
+                          className={`client-workspace__message ${message.senderId === profile.id ? "client-workspace__message--outgoing" : "client-workspace__message--incoming"}`}
+                        >
+                          {message.subject ? <h4>{message.subject}</h4> : null}
+                          <p>{message.body}</p>
+                          {message.attachments?.length ? (
+                            <div className="client-workspace__attachments">
+                              {message.attachments.map((attachment) => (
+                                <a
+                                  key={attachment.id}
+                                  href={`${serverUrl}/api/client-workspace/attachments/${attachment.id}`}
+                                  target="_blank"
+                                  rel="noreferrer"
+                                >
+                                  {attachment.originalName}
+                                </a>
+                              ))}
+                            </div>
+                          ) : null}
+                          <small>{new Date(message.createdAt).toLocaleString()}</small>
+                        </article>
+                      ))
+                    ) : (
+                      <p className="client-workspace__empty">No messages yet. Start the conversation below.</p>
+                    )}
                   </div>
-                  <input
-                    type="text"
-                    placeholder="Subject"
-                    value={composer.subject}
-                    onChange={(event) =>
-                      setComposer((current) => ({ ...current, subject: event.target.value }))
-                    }
-                  />
-                  <textarea
-                    placeholder="Write your message"
-                    value={composer.body}
-                    onChange={(event) =>
-                      setComposer((current) => ({ ...current, body: event.target.value }))
-                    }
-                    required
-                  />
-                  <label className="client-workspace__file-picker">
-                    <span>Attachments</span>
-                    <input type="file" multiple onChange={handleFileChange} />
-                  </label>
-                  {composer.files.length ? (
-                    <ul className="client-workspace__file-list">
-                      {composer.files.map((file) => (
-                        <li key={`${file.name}-${file.size}`}>{file.name}</li>
-                      ))}
-                    </ul>
-                  ) : null}
-                  {error ? <p className="client-workspace__error">{error}</p> : null}
-                  <button type="submit" disabled={isSending}>
-                    {isSending ? "Sending..." : "Send message"}
-                  </button>
-                </form>
-              </div>
+
+                  <form className="client-workspace__composer" onSubmit={handleSendMessage}>
+                    <div className="client-workspace__section-title">
+                      <h4>New message</h4>
+                    </div>
+                    <input
+                      type="text"
+                      placeholder="Subject"
+                      value={composer.subject}
+                      onChange={(event) =>
+                        setComposer((current) => ({ ...current, subject: event.target.value }))
+                      }
+                    />
+                    <textarea
+                      placeholder="Write your message"
+                      value={composer.body}
+                      onChange={(event) =>
+                        setComposer((current) => ({ ...current, body: event.target.value }))
+                      }
+                      required
+                    />
+                    <label className="client-workspace__file-picker">
+                      <span>Attachments</span>
+                      <input type="file" multiple onChange={handleFileChange} />
+                    </label>
+                    {composer.files.length ? (
+                      <ul className="client-workspace__file-list">
+                        {composer.files.map((file) => (
+                          <li key={`${file.name}-${file.size}`}>{file.name}</li>
+                        ))}
+                      </ul>
+                    ) : null}
+                    {error ? <p className="client-workspace__error">{error}</p> : null}
+                    <button type="submit" disabled={isSending}>
+                      {isSending ? "Sending..." : "Send message"}
+                    </button>
+                  </form>
+                </div>
+              )}
             </>
           ) : (
             <div className="client-workspace__placeholder">
-              <p>Select a contact to view messages, notes, and attachments.</p>
+              <p>Select a contact to continue.</p>
             </div>
           )}
         </div>

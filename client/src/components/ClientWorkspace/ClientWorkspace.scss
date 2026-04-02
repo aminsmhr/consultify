@@ -3,6 +3,7 @@
 .client-workspace {
   width: 100%;
   max-width: 1040px;
+  margin-top: 0;
   margin-bottom: 1.25rem;
   padding: 1.75rem;
   border-radius: $radius-lg;
@@ -123,6 +124,56 @@
   display: flex;
   flex-direction: column;
   gap: 1rem;
+}
+
+.client-workspace__client-card {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.client-workspace__client-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 1rem;
+  padding: 1rem;
+  border-radius: $radius-md;
+  background: rgba(255, 255, 255, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.5);
+
+  article {
+    padding: 0.95rem 1rem;
+    border-radius: 1rem;
+    background: rgba(255, 255, 255, 0.86);
+  }
+
+  span {
+    display: block;
+    margin-bottom: 0.45rem;
+    font-size: 0.78rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: rgba(76, 51, 38, 0.56);
+  }
+
+  strong {
+    display: block;
+    color: $text-color;
+    line-height: 1.5;
+  }
+}
+
+.client-workspace__client-summary {
+  padding: 1rem;
+  border-radius: $radius-md;
+  background: rgba(255, 255, 255, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.5);
+
+  p {
+    margin: 0;
+    color: $muted-text;
+    line-height: 1.6;
+  }
 }
 
 .client-workspace__thread-header {

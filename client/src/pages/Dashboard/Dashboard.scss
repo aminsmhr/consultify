@@ -159,6 +159,48 @@
     animation: toast-in 180ms ease-out;
   }
 
+  &__tabs {
+    width: 100%;
+    max-width: 1040px;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  &__tab-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+  }
+
+  &__tab {
+    border: none;
+    border-radius: 999px;
+    padding: 0.85rem 1.15rem;
+    background: rgba(111, 70, 48, 0.08);
+    color: $text-color;
+    font-weight: 800;
+    cursor: pointer;
+    transition: transform 160ms ease, background-color 160ms ease, color 160ms ease;
+
+    &:hover {
+      transform: translateY(-1px);
+      background: rgba(111, 70, 48, 0.14);
+    }
+  }
+
+  &__tab--active {
+    background: linear-gradient(135deg, $eco-color1, $eco-color2);
+    color: $text-color-light;
+    box-shadow: 0 14px 28px rgba(77, 48, 34, 0.18);
+  }
+
+  &__tab-panel {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+  }
+
   section {
     p {
       margin-bottom: 0.625rem;
