@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { getServerUrl } from "../../lib/serverUrl";
 
-function EditProfile({ token, handleLogout }) {
+function EditProfile({ token, handleLogout, onProfileUpdated }) {
   const navigate = useNavigate();
   const serverUrl = getServerUrl();
   const [isLoading, setIsLoading] = useState(true);
@@ -70,7 +70,7 @@ function EditProfile({ token, handleLogout }) {
     setIsSaving(true);
 
     try {
-      await axios.patch(
+      const { data } = await axios.patch(
         `${serverUrl}/api/user/current`,
         {
           first_name: form.first_name,
@@ -86,6 +86,10 @@ function EditProfile({ token, handleLogout }) {
           },
         }
       );
+
+      if (onProfileUpdated) {
+        onProfileUpdated(data);
+      }
 
       setSuccess("Profile updated.");
       setForm((current) => ({

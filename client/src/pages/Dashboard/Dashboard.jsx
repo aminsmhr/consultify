@@ -1,6 +1,5 @@
 import "./Dashboard.scss";
 import { useEffect, useRef, useState } from "react";
-import { useNavigate } from "react-router-dom";
 import MakeAppointment from "../../components/MakeAppointment/MakeAppointment";
 import ConsultantList from "../../components/ConsultantList/ConsultantList";
 import ClientWorkspace from "../../components/ClientWorkspace/ClientWorkspace";
@@ -9,8 +8,7 @@ import AppointmentsList from "../../components/AppointmentList/AppointmentsList"
 import { getServerUrl } from "../../lib/serverUrl";
 import io from "socket.io-client";
 
-function Dashboard({ token, handleLogout }) {
-  const [profile, setProfile] = useState(null);
+function Dashboard({ token, profile }) {
   const [isLoading, setIsLoading] = useState(true);
   const [consultants, setConsultants] = useState([]);
   const [appointmentMade, setAppointmentMade] = useState(false);
@@ -18,13 +16,14 @@ function Dashboard({ token, handleLogout }) {
   const [activeJoinStates, setActiveJoinStates] = useState([]);
   const [activeTab, setActiveTab] = useState("overview");
   const previousAppointmentState = useRef({});
-  const navigate = useNavigate();
 
   const serverUrl = getServerUrl();
 
   useEffect(() => {
-    (async ()=> await fetchConsultants())();
-    fetchProfile();
+    (async () => {
+      await fetchConsultants();
+      setIsLoading(false);
+    })();
   }, []);
 
   useEffect(() => {
@@ -206,21 +205,7 @@ function Dashboard({ token, handleLogout }) {
     }
   }
 
-  const fetchProfile = async () => {
-    try {
-      const { data: userProfile } = await axios.get(`${serverUrl}/api/user/current`, {
-        headers: {
-          Authorization: `Bearer ${token}`
-        }
-      })
-      setIsLoading(false);
-      setProfile(userProfile);
-    } catch (error) {
-      handleLogout();
-    }
-  }
-
-  if (isLoading) {
+  if (isLoading || !profile) {
     return <p>Loading...</p>
   }
 
@@ -249,37 +234,6 @@ function Dashboard({ token, handleLogout }) {
           </div>
         ))}
       </div>
-      {profile && <section className="profile">
-        <div className="profile__heading">
-          <div>
-            <p className="profile__eyebrow">Signed in as</p>
-            <h2>{profile.first_name} {profile.last_name}</h2>
-          </div>
-        </div>
-        <div className="profile__meta">
-          <article>
-            <span>Role</span>
-            <strong>{String(profile.type) === "1" ? "Client" : "Consultant"}</strong>
-          </article>
-          <article>
-            <span>Email</span>
-            <strong>{profile.email}</strong>
-          </article>
-          <article>
-            <span>Phone</span>
-            <strong>{profile.phone}</strong>
-          </article>
-          <article>
-            <span>Address</span>
-            <strong>{profile.address}</strong>
-          </article>
-        </div>
-        <div className="profile__actions">
-          <button className="profile__button" onClick={() => navigate("/profile/edit")}>
-            Edit profile
-          </button>
-        </div>
-      </section>}
       {profile ? (
         <section className="dashboard__tabs">
           <div className="dashboard__tab-list">

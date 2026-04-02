@@ -1,102 +1,19 @@
 @import '../../Style/variables';
 
 .dashboard {
-  width: min(1180px, calc(100% - 2rem));
+  width: min(1280px, calc(100% - 2rem));
   margin: 0 auto;
-  padding: 1.75rem 0 3rem;
+  padding: 1.1rem 0 2.2rem;
   display: flex;
   flex-direction: column;
   align-items: center;
 
-  .profile {
-    width: 100%;
-    max-width: 1040px;
-    margin: 0 0 1.25rem;
-    padding: 1.6rem 1.75rem;
-    border: 1px solid rgba(255, 255, 255, 0.42);
-    border-radius: $radius-lg;
-    background: $surface-primary;
-    backdrop-filter: blur(18px);
-    box-shadow: $shadow-md;
-  }
-
-  .profile__heading {
-    display: flex;
-    gap: 1rem;
-    align-items: flex-start;
-    margin-bottom: 1.4rem;
-
-    h2 {
-      margin: 0.25rem 0 0;
-      font-family: $font-stack;
-      font-size: clamp(1.4rem, 2vw, 2rem);
-      color: $text-color;
-    }
-  }
-
-  .profile__eyebrow {
-    margin: 0;
-    font-size: 0.78rem;
-    letter-spacing: 0.16em;
-    text-transform: uppercase;
-    color: rgba(76, 51, 38, 0.6);
-  }
-
-  .profile__meta {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 1rem;
-
-    article {
-      padding: 1rem 1.1rem;
-      border-radius: $radius-md;
-      background: rgba(255, 255, 255, 0.58);
-      border: 1px solid rgba(255, 255, 255, 0.45);
-    }
-
-    span {
-      display: block;
-      margin-bottom: 0.45rem;
-      font-size: 0.78rem;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-      color: rgba(76, 51, 38, 0.56);
-    }
-
-    strong {
-      display: block;
-      color: $text-color;
-      line-height: 1.5;
-    }
-  }
-
-  .profile__actions {
-    margin-top: 1.15rem;
-  }
-
-  .profile__button {
-    border: none;
-    border-radius: 999px;
-    padding: 0.9rem 1.15rem;
-    background: linear-gradient(135deg, $eco-color1, $eco-color2);
-    color: $text-color-light;
-    font-weight: 800;
-    cursor: pointer;
-    box-shadow: 0 14px 30px rgba(77, 48, 34, 0.18);
-    transition: transform 160ms ease, box-shadow 160ms ease;
-
-    &:hover {
-      transform: translateY(-1px);
-      box-shadow: 0 18px 34px rgba(77, 48, 34, 0.24);
-    }
-  }
-
   &__hero {
     width: 100%;
-    max-width: 1040px;
-    margin-bottom: 1.25rem;
-    padding: 2rem 2.1rem;
-    border-radius: $radius-lg;
+    max-width: 1280px;
+    margin-bottom: 0.9rem;
+    padding: 1.35rem 1.45rem;
+    border-radius: 1.2rem;
     background:
       radial-gradient(circle at top right, rgba(248, 220, 188, 0.18), transparent 22rem),
       linear-gradient(135deg, rgba(58, 35, 24, 0.96), rgba(111, 70, 48, 0.92));
@@ -105,9 +22,9 @@
   }
 
   &__eyebrow {
-    margin: 0 0 0.9rem;
-    font-size: 0.8rem;
-    letter-spacing: 0.18em;
+    margin: 0 0 0.55rem;
+    font-size: 0.72rem;
+    letter-spacing: 0.14em;
     text-transform: uppercase;
     color: rgba(255, 253, 248, 0.68);
   }
@@ -116,13 +33,14 @@
     margin: 0;
     color: #fff8f1;
     font-family: $font-stack;
-    font-size: clamp(2rem, 4vw, 3.6rem);
-    line-height: 0.95;
+    font-size: clamp(1.55rem, 2.4vw, 2.4rem);
+    line-height: 1;
   }
 
   &__subtitle {
-    margin: 1rem 0 0;
-    max-width: 44rem;
+    margin: 0.65rem 0 0;
+    max-width: 52rem;
+    font-size: 0.95rem;
     color: rgba(255, 253, 248, 0.82);
   }
 
@@ -161,24 +79,25 @@
 
   &__tabs {
     width: 100%;
-    max-width: 1040px;
+    max-width: 1280px;
     display: flex;
     flex-direction: column;
-    gap: 1rem;
+    gap: 0.8rem;
   }
 
   &__tab-list {
     display: flex;
     flex-wrap: wrap;
-    gap: 0.75rem;
+    gap: 0.6rem;
   }
 
   &__tab {
     border: none;
     border-radius: 999px;
-    padding: 0.85rem 1.15rem;
+    padding: 0.7rem 0.95rem;
     background: rgba(111, 70, 48, 0.08);
     color: $text-color;
+    font-size: 0.92rem;
     font-weight: 800;
     cursor: pointer;
     transition: transform 160ms ease, background-color 160ms ease, color 160ms ease;
@@ -198,7 +117,7 @@
   &__tab-panel {
     display: flex;
     flex-direction: column;
-    gap: 1.25rem;
+    gap: 0.9rem;
   }
 
   section {
@@ -223,16 +142,6 @@
 @media (max-width: 768px) {
   .dashboard {
     padding-top: 1.1rem;
-
-    &__hero,
-    .profile {
-      padding: 1.35rem;
-    }
-
-    .profile__heading {
-      flex-direction: column;
-      align-items: stretch;
-    }
   }
 }
 
