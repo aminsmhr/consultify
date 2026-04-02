@@ -282,7 +282,7 @@ router.patch("/current", authorize, async (req, res) => {
 router.get("/consultants", authorize, async (req, res) => {
   try {
     const consultants = await knex("users")
-      .select("id", "first_name", "last_name")
+      .select("id", "first_name", "last_name", "email", "phone", "address")
       .where({ type: "0" });
     res.status(200).send(consultants);
   } catch (e) {
