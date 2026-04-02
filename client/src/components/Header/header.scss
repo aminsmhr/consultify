@@ -1,10 +1,57 @@
 @import '../../Style/variables';
 
 .header {
-    background-color: $text-color;
-    color: $accent-color;
-    text-align: center;
-    padding: 0.625rem;
-    width: 100%;
-    font-family: $font-stack;
-  };
+  width: min(1180px, calc(100% - 2rem));
+  margin: 1rem auto 0;
+  padding: 1rem 1.25rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  border-radius: $radius-lg;
+  background: linear-gradient(135deg, rgba(12, 26, 42, 0.9), rgba(31, 91, 181, 0.78));
+  color: $text-color-light;
+  box-shadow: $shadow-lg;
+  font-family: $font-stack;
+
+  &__brand {
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+  }
+
+  &__eyebrow {
+    font-size: 0.75rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: rgba(255, 253, 248, 0.72);
+  }
+
+  &__title {
+    margin: 0;
+    font-size: clamp(1.5rem, 2vw, 2.2rem);
+    line-height: 1;
+  }
+
+  &__badge {
+    padding: 0.65rem 0.95rem;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.14);
+    border: 1px solid rgba(255, 255, 255, 0.16);
+    font-size: 0.9rem;
+    white-space: nowrap;
+  }
+}
+
+@media (max-width: 640px) {
+  .header {
+    flex-direction: column;
+    align-items: flex-start;
+
+    &__badge {
+      align-self: stretch;
+      text-align: center;
+    }
+  }
+}

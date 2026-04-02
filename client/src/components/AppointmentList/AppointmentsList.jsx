@@ -116,7 +116,10 @@ const AppointmentsList = ({ token }) => {
           {appointments.map((appointment) => (
             <li key={appointment.appointmentId} className="appointment-item">
               <span className="appointment-details">
-                Appointment: {formatDate(appointment.appointmentDateTime)} <br/> Client: {appointment.clientFirstName} {appointment.clientLastName}
+                <strong>{formatDate(appointment.appointmentDateTime)}</strong>
+                Client: {appointment.clientFirstName} {appointment.clientLastName}
+                <br />
+                Status: {appointment.appointmentStatus}
               </span>
               <div className="appointment-actions">
                 {/* Conditional rendering based on status */}

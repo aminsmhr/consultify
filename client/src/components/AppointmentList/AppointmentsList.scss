@@ -1,87 +1,104 @@
-// AppointmentsList.scss
-@import '../../Style/variables';
+@import "../../Style/variables";
 
 .appointments-list {
   width: 100%;
-  max-width: 37.5rem;
-  background-color: $text-color-light;
-  border: thin solid #ddd;
-  padding: 0.3125rem 0.625rem;
-  border-radius: 0.25rem;
-  box-shadow: 0 0.25rem 0.5rem rgba(0, 0, 0, 0.1);
-  transition: background-color 0.3s ease;
+  max-width: 1040px;
+  padding: 1.6rem 1.75rem;
+  border-radius: $radius-lg;
+  border: 1px solid rgba(255, 255, 255, 0.42);
+  background: $surface-primary;
+  backdrop-filter: blur(18px);
+  box-shadow: $shadow-md;
+}
 
-  .appointments-title {
-    color: $text-color; 
-    margin-bottom: 1.25rem;
+.appointments-title {
+  margin: 0 0 1.25rem;
+  font-family: $font-stack;
+  font-size: clamp(1.4rem, 2vw, 2rem);
+  color: $text-color;
+}
+
+.appointments-container {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 1rem;
+}
+
+.appointment-item {
+  display: grid;
+  gap: 1rem;
+  padding: 1.2rem;
+  border-radius: $radius-md;
+  background: rgba(255, 255, 255, 0.62);
+  border: 1px solid rgba(255, 255, 255, 0.5);
+}
+
+.appointment-details {
+  color: $text-color;
+  line-height: 1.7;
+}
+
+.appointment-details strong {
+  display: block;
+  margin-bottom: 0.45rem;
+  font-size: 1rem;
+}
+
+.appointment-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.appointment-actions .btn {
+  border: none;
+  border-radius: 999px;
+  padding: 0.8rem 1.15rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: transform 160ms ease, box-shadow 160ms ease, background-color 160ms ease;
+  box-shadow: 0 0.65rem 1.2rem rgba(12, 26, 42, 0.08);
+}
+
+.appointment-actions .btn:hover {
+  transform: translateY(-1px);
+}
+
+.appointment-actions .btn-join {
+  background: linear-gradient(135deg, $accent-color, #ff9b7d);
+  color: $text-color-light;
+}
+
+.appointment-actions .btn-accept {
+  background: rgba(31, 111, 235, 0.12);
+  color: #0c4179;
+}
+
+.appointment-actions .btn-cancel {
+  background: rgba(186, 53, 62, 0.12);
+  color: #8f1e27;
+}
+
+.no-appointments,
+.loading {
+  width: 100%;
+  max-width: 1040px;
+  margin: 0;
+  padding: 1.4rem 1.6rem;
+  border-radius: $radius-md;
+  background: rgba(255, 255, 255, 0.62);
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  color: $text-color;
+}
+
+@media (max-width: 768px) {
+  .appointments-list {
+    padding: 1.3rem;
   }
 
-  .appointments-container {
-    list-style: none;
-    padding: 0;
-
-    .appointment-item {
-      background: $secondary-color; 
-      border: 0.0625rem solid $accent-color; 
-      padding: 0.9375rem;
-      margin-bottom: 0.625rem;
-      border-radius: 0.25rem;
-      display: flex;
-      flex-direction: column;
-      align-items: flex-start;
-
-      .appointment-details {
-        margin-bottom: 0.625rem; 
-      }
-
-      .appointment-actions {
-        display: flex;
-        width: 100%; 
-
-        button {
-          flex: 1; 
-          margin-right: 0.625rem; 
-          padding: 0.3125rem 0.9375rem;
-          border: none;
-          border-radius: 0.25rem;
-          cursor: pointer;
-          transition: background-color 0.2s;
-
-          &:last-child {
-            margin-right: 0; 
-          }
-          
-          &.btn-join {
-            background-color: $primary-color; 
-            color: $text-color-light; 
-
-            &:hover {
-              background-color: darken($primary-color, 5%);
-            }
-          }
-
-          &.btn-accept {
-            background-color: $info-color; 
-
-            &:hover {
-              background-color: darken($info-color, 5%);
-            }
-          }
-
-          &.btn-cancel {
-            background-color: $danger-color; 
-            color: $text-color-light; 
-
-            &:hover {
-              background-color: darken($danger-color, 5%);
-            }
-          }
-        }
-      }
-    }
-  }
-
-  .no-appointments, .loading {
-    color: $text-color; 
+  .appointment-actions .btn {
+    width: 100%;
   }
 }

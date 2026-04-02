@@ -214,7 +214,17 @@ function Dashboard({ token, handleLogout }) {
 
   return (
     <main className="dashboard">
-      <h1 className="dashboard__title">Dashboard</h1>
+      <section className="dashboard__hero">
+        <p className="dashboard__eyebrow">Workspace overview</p>
+        <h1 className="dashboard__title">
+          {profile?.type === 1 ? "Plan your next appointment" : "Manage your live sessions"}
+        </h1>
+        <p className="dashboard__subtitle">
+          {profile?.type === 1
+            ? "Browse consultants, lock in a time, and jump into sessions from one calm workspace."
+            : "Review appointment requests, stay on top of joins in real time, and keep every session moving."}
+        </p>
+      </section>
       <div className="dashboard__toast-stack">
         {activeJoinStates.map((notification) => (
           <div key={notification.id} className="dashboard__toast dashboard__toast--active">
@@ -228,11 +238,31 @@ function Dashboard({ token, handleLogout }) {
         ))}
       </div>
       {profile && <section className="profile">
-        <p>Name: {profile.first_name} {profile.last_name}</p>
-        <p>Address: {profile.address}</p>
-        <p>Phone: {profile.phone}</p>
-        <p>Email: {profile.email}</p>
-        <a href="#" onClick={handleLogout}>Logout</a>
+        <div className="profile__heading">
+          <div>
+            <p className="profile__eyebrow">Signed in as</p>
+            <h2>{profile.first_name} {profile.last_name}</h2>
+          </div>
+          <button className="profile__logout" onClick={handleLogout}>Log out</button>
+        </div>
+        <div className="profile__meta">
+          <article>
+            <span>Role</span>
+            <strong>{String(profile.type) === "1" ? "Client" : "Consultant"}</strong>
+          </article>
+          <article>
+            <span>Email</span>
+            <strong>{profile.email}</strong>
+          </article>
+          <article>
+            <span>Phone</span>
+            <strong>{profile.phone}</strong>
+          </article>
+          <article>
+            <span>Address</span>
+            <strong>{profile.address}</strong>
+          </article>
+        </div>
       </section>}
       {profile && (profile.type === 1) ?  <>
         <MakeAppointment consultants={consultants} token={token} onAppointmentMade={eventAppointmentMade} />  

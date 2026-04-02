@@ -44,20 +44,31 @@ function Login({ handleLogin }) {
 
     return (
         <main className="login-page">
-            <form className="login" onSubmit={handleSubmit}>
-                <h1 className="login__title">Log in</h1>
+            <section className="login-page__panel">
+                <div className="login-page__intro">
+                    <span className="login-page__eyebrow">Consultify platform</span>
+                    <h1>Advisory sessions with a sharper interface.</h1>
+                    <p>
+                        Manage bookings, jump into calls, and keep both consultants and clients in sync
+                        from one polished workspace.
+                    </p>
+                </div>
+                <form className="login" onSubmit={handleSubmit}>
+                    <h2 className="login__title">Welcome back</h2>
+                    <p className="login__subtitle">Sign in to review your upcoming sessions.</p>
 
-                <Input name="email" label="Email" />
-                <Input type="password" name="password" label="Password" />
+                    <Input name="email" label="Email" />
+                    <Input type="password" name="password" label="Password" />
 
-                <button className="login__button">
-                    Log in
-                </button>
-                {error && <p>Error trying to login.</p>}
-            </form>
-            <p>
-                Need an account? <a href="/signup" onClick={showSignUp}>Sign up</a>
-            </p>
+                    <button className="login__button">
+                        Log in
+                    </button>
+                    {error && <p className="login__error">Error trying to login.</p>}
+                    <p className="login__switch">
+                        Need an account? <a href="/signup" onClick={showSignUp}>Sign up</a>
+                    </p>
+                </form>
+            </section>
         </main>
     );
 }

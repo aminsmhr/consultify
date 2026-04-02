@@ -2,7 +2,7 @@ import "./Input.scss";
 
 function Input({ label, name, type = "text",onChange, checked }) {
   return (
-    <div className="field">
+    <div className={`field ${type === "checkbox" ? "field--checkbox" : ""}`}>
       <label htmlFor={name} className="field__label">
         {label}
       </label>

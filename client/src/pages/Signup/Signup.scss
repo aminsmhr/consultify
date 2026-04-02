@@ -1,55 +1,127 @@
 @import '../../Style/variables';
 
 .signup-page {
-    background-color: $secondary-color;
     min-height: 100vh;
     display: flex;
-    flex-direction: column;
-    justify-content: center;
     align-items: center;
-    padding: 1rem;
+    justify-content: center;
+    padding: 2rem;
+
+    &__panel {
+        width: min(1120px, 100%);
+        display: grid;
+        grid-template-columns: minmax(0, 1.05fr) minmax(22rem, 30rem);
+        gap: 1.5rem;
+        align-items: stretch;
+    }
+
+    &__intro {
+        padding: clamp(2rem, 4.5vw, 4rem);
+        border-radius: $radius-lg;
+        background:
+            linear-gradient(150deg, rgba(217, 103, 75, 0.92), rgba(11, 22, 36, 0.86)),
+            linear-gradient(180deg, #d9674b, #143d76);
+        box-shadow: $shadow-lg;
+        color: $text-color-light;
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-end;
+
+        h1 {
+            margin: 0 0 1rem;
+            font-family: $font-stack;
+            font-size: clamp(2rem, 4vw, 3.7rem);
+            line-height: 0.98;
+            max-width: 12ch;
+        }
+
+        p {
+            margin: 0;
+            max-width: 36rem;
+            color: rgba(255, 253, 248, 0.82);
+        }
+    }
+
+    &__eyebrow {
+        margin-bottom: 1.25rem;
+        font-size: 0.8rem;
+        letter-spacing: 0.22em;
+        text-transform: uppercase;
+        color: rgba(255, 253, 248, 0.68);
+    }
 }
 
 .signup {
     display: flex;
     flex-direction: column;
-    width: 22rem;
-    box-shadow: 0 2px 16px rgba(0, 0, 0, 0.1);
-    background-color: $text-color-light;
-    border-radius: 0.5rem;
-    padding: 2rem 1.5rem;
-    margin-bottom: 1rem;
+    padding: clamp(1.75rem, 4vw, 2.5rem);
+    border-radius: $radius-lg;
+    background: $surface-primary;
+    border: 1px solid rgba(255, 255, 255, 0.45);
+    backdrop-filter: blur(18px);
+    box-shadow: $shadow-lg;
 
     &__title {
-        margin-top: 0;
-        margin-bottom: 1.5rem;
-        text-align: center;
-        font-size: 1.5rem;
-        border-bottom: 5px solid $warning-color;
-        padding-bottom: 0.5rem;
-        align-self: center;
+        margin: 0 0 0.45rem;
+        font-family: $font-stack;
+        font-size: 2rem;
+        color: $text-color;
+    }
+
+    &__subtitle {
+        margin: 0 0 1.4rem;
+        color: $muted-text;
     }
 
     &__button {
-        margin-top: 1rem;
-
-        background-color: $eco-color1;
-        border: 1px solid $eco-color2;
+        margin-top: 0.75rem;
+        background: linear-gradient(135deg, $eco-color1, $eco-color2);
+        border: none;
         color: $text-color-light;
-        border-radius: 0.5rem;
-        padding: 0.5rem;
+        border-radius: 999px;
+        padding: 0.95rem 1.2rem;
         font-size: inherit;
+        font-weight: 800;
         cursor: pointer;
-        transition: background-color 0.15s;
+        box-shadow: 0 14px 30px rgba(20, 61, 118, 0.2);
+        transition: transform 0.15s ease, box-shadow 0.15s ease;
 
         &:hover {
-            background-color: $eco-color2;
+            transform: translateY(-1px);
+            box-shadow: 0 18px 34px rgba(20, 61, 118, 0.26);
         }
     }
 
     &__message {
-        border-left: 5px solid $secondary-color;
-        padding: 0.75rem;
-        margin-top: 2rem;
+        margin-top: 1rem;
+        padding: 0.85rem 1rem;
+        border-radius: $radius-md;
+    }
+
+    &__message--success {
+        background: rgba(31, 143, 99, 0.1);
+        color: #1a6d4d;
+    }
+
+    &__message--error {
+        background: rgba(213, 83, 83, 0.09);
+        color: #8f2c2c;
+    }
+
+    &__switch {
+        margin: 1.25rem 0 0;
+        color: $muted-text;
+    }
+}
+
+@media (max-width: 900px) {
+    .signup-page {
+        &__panel {
+            grid-template-columns: 1fr;
+        }
+
+        &__intro {
+            min-height: 15rem;
+        }
     }
 }
