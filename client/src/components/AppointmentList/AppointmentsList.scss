@@ -103,9 +103,9 @@
   border-radius: $radius-md;
   background: linear-gradient(
     90deg,
-    rgba(255, 255, 255, 0.42),
-    rgba(255, 255, 255, 0.72),
-    rgba(255, 255, 255, 0.42)
+    rgba(111, 70, 48, 0.12),
+    rgba(255, 244, 231, 0.78),
+    rgba(111, 70, 48, 0.12)
   );
   background-size: 200% 100%;
   animation: appointments-skeleton 1.35s ease-in-out infinite;
