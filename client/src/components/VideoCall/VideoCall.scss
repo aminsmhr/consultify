@@ -3,7 +3,7 @@
 .facetime-container {
   position: relative;
   width: min(1180px, calc(100% - 2rem));
-  min-height: calc(100vh - 2rem);
+  height: min(820px, calc(100dvh - 2rem));
   margin: 1rem auto;
   padding: 1.25rem;
   border-radius: 2rem;
@@ -16,7 +16,7 @@
 
 .video-style {
   width: 100%;
-  min-height: calc(100vh - 4.5rem);
+  height: 100%;
   object-fit: cover;
   border-radius: 1.5rem;
   background: rgba(4, 10, 19, 0.9);
@@ -50,6 +50,7 @@
 }
 
 .call-button,
+.mute-button,
 .end-button {
   min-width: 3.4rem;
   min-height: 3.4rem;
@@ -64,6 +65,7 @@
 }
 
 .call-button:hover,
+.mute-button:hover,
 .end-button:hover {
   transform: translateY(-1px);
   filter: brightness(1.04);
@@ -71,6 +73,14 @@
 
 .call-button {
   background: linear-gradient(135deg, #28b47a, #1e8d61);
+}
+
+.mute-button {
+  background: rgba(255, 255, 255, 0.14);
+}
+
+.mute-button--muted {
+  background: linear-gradient(135deg, #f29f4b, #d97706);
 }
 
 .end-button {
@@ -94,14 +104,13 @@
 @media (max-width: 900px) {
   .facetime-container {
     width: calc(100% - 1rem);
-    min-height: calc(100vh - 1rem);
+    height: calc(100dvh - 1rem);
     margin: 0.5rem auto;
     padding: 0.85rem;
     border-radius: 1.35rem;
   }
 
   .video-style {
-    min-height: calc(100vh - 9rem);
     border-radius: 1rem;
   }
 
