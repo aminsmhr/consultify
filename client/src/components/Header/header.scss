@@ -8,10 +8,12 @@
   align-items: center;
   justify-content: space-between;
   gap: 1rem;
-  border: 1px solid rgba(255, 255, 255, 0.35);
+  border: 1px solid rgba(255, 244, 231, 0.22);
   border-radius: $radius-lg;
-  background: linear-gradient(135deg, rgba(12, 26, 42, 0.9), rgba(31, 91, 181, 0.78));
-  color: $text-color-light;
+  background:
+    radial-gradient(circle at top right, rgba(244, 213, 179, 0.18), transparent 16rem),
+    linear-gradient(135deg, rgba(58, 35, 24, 0.97), rgba(103, 68, 47, 0.92));
+  color: #fff7ef;
   box-shadow: $shadow-lg;
   font-family: $font-stack;
 
@@ -25,22 +27,24 @@
     font-size: 0.75rem;
     letter-spacing: 0.18em;
     text-transform: uppercase;
-    color: rgba(255, 253, 248, 0.72);
+    color: rgba(255, 238, 220, 0.74);
   }
 
   &__title {
     margin: 0;
     font-size: clamp(1.5rem, 2vw, 2.2rem);
     line-height: 1;
+    color: #fffaf4;
   }
 
   &__badge {
     padding: 0.65rem 0.95rem;
     border-radius: 999px;
-    background: rgba(255, 255, 255, 0.14);
-    border: 1px solid rgba(255, 255, 255, 0.16);
+    background: rgba(255, 243, 229, 0.12);
+    border: 1px solid rgba(255, 233, 212, 0.18);
     font-size: 0.9rem;
     white-space: nowrap;
+    color: #ffe8d4;
   }
 }
 
