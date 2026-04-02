@@ -40,14 +40,14 @@
     font-size: 0.78rem;
     letter-spacing: 0.16em;
     text-transform: uppercase;
-    color: rgba(12, 26, 42, 0.55);
+    color: rgba(76, 51, 38, 0.6);
   }
 
   .profile__logout {
     border: none;
     border-radius: 999px;
     padding: 0.8rem 1.2rem;
-    background: rgba(12, 26, 42, 0.08);
+    background: rgba(111, 70, 48, 0.09);
     color: $text-color;
     font-weight: 700;
     cursor: pointer;
@@ -55,7 +55,7 @@
 
     &:hover {
       transform: translateY(-1px);
-      background: rgba(12, 26, 42, 0.14);
+      background: rgba(111, 70, 48, 0.16);
     }
   }
 
@@ -77,7 +77,7 @@
       font-size: 0.78rem;
       letter-spacing: 0.12em;
       text-transform: uppercase;
-      color: rgba(12, 26, 42, 0.5);
+      color: rgba(76, 51, 38, 0.56);
     }
 
     strong {
@@ -94,8 +94,8 @@
     padding: 2rem 2.1rem;
     border-radius: $radius-lg;
     background:
-      radial-gradient(circle at top right, rgba(255, 255, 255, 0.22), transparent 22rem),
-      linear-gradient(135deg, rgba(12, 26, 42, 0.94), rgba(31, 91, 181, 0.8));
+      radial-gradient(circle at top right, rgba(248, 220, 188, 0.18), transparent 22rem),
+      linear-gradient(135deg, rgba(58, 35, 24, 0.96), rgba(111, 70, 48, 0.92));
     color: $text-color-light;
     box-shadow: $shadow-lg;
   }
@@ -110,7 +110,7 @@
 
   &__title {
     margin: 0;
-    color: $text-color;
+    color: #fff8f1;
     font-family: $font-stack;
     font-size: clamp(2rem, 4vw, 3.6rem);
     line-height: 0.95;
@@ -147,7 +147,7 @@
   }
 
   &__toast--active {
-    background: #1f6feb;
+    background: #7c5138;
   }
 
   &__toast--new {

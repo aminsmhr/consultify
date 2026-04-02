@@ -7,10 +7,10 @@
 }
 
 :root {
-    color: #102033;
+    color: #2f2018;
     background:
         radial-gradient(circle at top left, rgba(217, 103, 75, 0.18), transparent 28rem),
-        radial-gradient(circle at top right, rgba(25, 76, 157, 0.2), transparent 30rem),
+        radial-gradient(circle at top right, rgba(111, 70, 48, 0.16), transparent 30rem),
         linear-gradient(180deg, #f7f2e7 0%, #efe7da 100%);
     color-scheme: light;
     font-family: "Manrope", "Segoe UI", sans-serif;
@@ -40,5 +40,5 @@ textarea {
 }
 
 a {
-    color: #1f5bb5;
+    color: #8b5a3c;
 }
