@@ -1,224 +1,201 @@
-import React, { useEffect, useRef, useState } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
-import axios from "axios";
-import io from "socket.io-client";
-import "./VideoCall.scss";
-import { getServerUrl } from "../../lib/serverUrl";
-
-const iceServers = [
-  { urls: "stun:stun.relay.metered.ca:80" },
-  {
-    urls: "turn:standard.relay.metered.ca:80",
-    username: "502ddfd9c85733ea9cfe7daf",
-    credential: "YYrBo4FYRCvy32DQ",
-  },
-  {
-    urls: "turn:standard.relay.metered.ca:80?transport=tcp",
-    username: "502ddfd9c85733ea9cfe7daf",
-    credential: "YYrBo4FYRCvy32DQ",
-  },
-  {
-    urls: "turn:standard.relay.metered.ca:443",
-    username: "502ddfd9c85733ea9cfe7daf",
-    credential: "YYrBo4FYRCvy32DQ",
-  },
-  {
-    urls: "turn:standard.relay.metered.ca:443?transport=tcp",
-    username: "502ddfd9c85733ea9cfe7daf",
-    credential: "YYrBo4FYRCvy32DQ",
-  },
-];
+import React, { useEffect, useRef, useState } from 'react';
+import { useLocation } from 'react-router-dom';
+import axios from 'axios';
+import './VideoCall.scss';
+import io from 'socket.io-client';
+import { useNavigate } from 'react-router-dom';
+import { getServerUrl } from '../../lib/serverUrl';
 
 const VideoCall = ({ serverUrlProp }) => {
   const navigate = useNavigate();
-  const location = useLocation();
-  const { token, appointmentId, type: userType } = location.state || {};
-  const serverUrl = import.meta.env.VITE_SERVER_URL || serverUrlProp || getServerUrl();
-
   const localVideoRef = useRef(null);
   const remoteVideoRef = useRef(null);
   const socketRef = useRef(null);
   const localStreamRef = useRef(null);
   const remoteStreamRef = useRef(null);
-  const peerConnectionRef = useRef(new RTCPeerConnection({ iceServers }));
-  const remoteSocketIdRef = useRef(null);
   const isEndingCallRef = useRef(false);
-
+  const [socket, setSocket] = useState(null);
   const [remoteSocket, setRemoteSocket] = useState(null);
   const [localStream, setLocalStream] = useState(null);
   const [remoteStream, setRemoteStream] = useState(null);
-  const [callStage, setCallStage] = useState("loading");
+  const [callStatus, setCallStatus] = useState(false);
   const [mediaError, setMediaError] = useState("");
-  const [isMuted, setIsMuted] = useState(false);
+  const peerConnection = useRef(new RTCPeerConnection({
+    iceServers: [
+      {
+        urls: "stun:stun.relay.metered.ca:80",
+      },
+      {
+        urls: "turn:standard.relay.metered.ca:80",
+        username: "502ddfd9c85733ea9cfe7daf",
+        credential: "YYrBo4FYRCvy32DQ",
+      },
+      {
+        urls: "turn:standard.relay.metered.ca:80?transport=tcp",
+        username: "502ddfd9c85733ea9cfe7daf",
+        credential: "YYrBo4FYRCvy32DQ",
+      },
+      {
+        urls: "turn:standard.relay.metered.ca:443",
+        username: "502ddfd9c85733ea9cfe7daf",
+        credential: "YYrBo4FYRCvy32DQ",
+      },
+      {
+        urls: "turn:standard.relay.metered.ca:443?transport=tcp",
+        username: "502ddfd9c85733ea9cfe7daf",
+        credential: "YYrBo4FYRCvy32DQ",
+      },
+    ],
+  }));
+
+  const location = useLocation();
+  const { token, appointmentId, type: userType } = location.state || {}; 
+  const serverUrl = import.meta.env.VITE_SERVER_URL || serverUrlProp || getServerUrl();
+
 
   useEffect(() => {
-    const peerConnection = peerConnectionRef.current;
-    const newSocket = io(serverUrl, token ? { auth: { token } } : undefined);
-
+    let remoteSocketId = null;
+    let candidates =[];
+    const newSocket = io(serverUrl);
     socketRef.current = newSocket;
+    setSocket(newSocket);
+
+    /* const iceServers = (async () => {const response =  await fetch("https://amin.metered.live/api/v1/turn/credentials?apiKey=c1a6e573176dc6e913665a630406ea24b038");
+     return await response.json();})().then(x=>console.log("iceServers", x));
+     */
+    
 
     if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
       setMediaError("Camera and microphone are unavailable in this browser or context.");
-      setCallStage("error");
     } else {
       navigator.mediaDevices
         .getUserMedia({ video: true, audio: true })
         .then((stream) => {
+          localVideoRef.current.srcObject = stream;
           localStreamRef.current = stream;
           setLocalStream(stream);
-          setCallStage("ready");
-
-          if (localVideoRef.current) {
-            localVideoRef.current.srcObject = stream;
-          }
-
           stream.getTracks().forEach((track) => {
-            peerConnection.addTrack(track, stream);
+            peerConnection.current.addTrack(track, stream);
           });
         })
         .catch((error) => {
           console.error(error);
           setMediaError("Unable to access camera and microphone.");
-          setCallStage("error");
         });
     }
 
-    peerConnection.onicecandidate = (event) => {
-      if (event.candidate && remoteSocketIdRef.current) {
-        newSocket.emit("candidate", {
-          offerCandidates: event.candidate,
-          socketId: remoteSocketIdRef.current,
-        });
+    peerConnection.current.onicecandidate = (event) => {
+      if (event.candidate) {
+        candidates.push(event.candidate);
+        newSocket.emit("candidate", {offerCandidates : event.candidate, socketId: remoteSocketId});
       }
     };
 
-    peerConnection.onconnectionstatechange = () => {
-      switch (peerConnection.connectionState) {
-        case "connected":
-          setCallStage("connected");
-          break;
-        case "disconnected":
-        case "closed":
-        case "failed":
-          endCall();
-          break;
-        default:
-          break;
-      }
-    };
+    peerConnection.current.addEventListener(
+      "connectionstatechange",
+      (event) => {
+        switch (peerConnection.current.connectionState) {
+          case "new":
+          case "connecting":
+            break;
+          case "connected":
+            break;
+          case "disconnected":
+          case "closed":
+          case "failed":
+            endCall();
+            break;
+          default:
+            break;
+        }
+      },
+      false,
+    );
 
-    peerConnection.ontrack = (event) => {
+    peerConnection.current.ontrack = (event) => {
       remoteStreamRef.current = event.streams[0];
       setRemoteStream(event.streams[0]);
-      if (remoteVideoRef.current) {
-        remoteVideoRef.current.srcObject = event.streams[0];
-      }
+      remoteVideoRef.current.srcObject = event.streams[0];
     };
 
-    newSocket.on("offer", async ({ offer, _socket }) => {
-      remoteSocketIdRef.current = _socket;
-      setCallStage("joining");
+    peerConnection.current.onaddstream = (event) => {
+    };
 
-      if (!peerConnection.currentRemoteDescription) {
-        await peerConnection.setRemoteDescription(new RTCSessionDescription(offer));
-        const answer = await peerConnection.createAnswer();
-        await peerConnection.setLocalDescription(answer);
-        newSocket.emit("answer", { answer, socketId: _socket });
+    newSocket.on("offer", async ({offer, _socket}) => {
+      remoteSocketId = _socket;
+      if (!peerConnection.current.currentRemoteDescription) {
+        await peerConnection.current.setRemoteDescription(new RTCSessionDescription(offer));
+        const answer = await peerConnection.current.createAnswer();
+        await peerConnection.current.setLocalDescription(answer);
+        newSocket.emit("answer", {answer, socketId: _socket});
       }
     });
-
+    
     newSocket.on("me", (socketId) => {
       const updateUrl = `${serverUrl}/api/appointments/${appointmentId}/socket`;
       const config = {
         headers: {
-          Authorization: `Bearer ${token}`,
-        },
+          Authorization: `Bearer ${token}`,  
+        }
       };
-      const body =
-        userType === "client"
-          ? { clientSocketId: socketId }
-          : { consultantSocketId: socketId };
-
-      axios
-        .patch(updateUrl, body, config)
-        .then((response) => {
+      const body = userType === 'client' ? { clientSocketId: socketId } : { consultantSocketId: socketId };
+      axios.patch(updateUrl, body, config)
+        .then(async response => {
           if (response.data.peerSocket) {
-            remoteSocketIdRef.current = response.data.peerSocket;
             setRemoteSocket(response.data.peerSocket);
           }
         })
-        .catch((error) => {
-          console.error("Error updating socket ID:", error?.response?.data);
+        .catch(error => {
+          console.error("Error updating socket ID: ", error?.response?.data);
         });
     });
 
-    newSocket.on("answer", async ({ answer, socketId }) => {
-      remoteSocketIdRef.current = socketId;
-      if (!peerConnection.currentRemoteDescription) {
-        await peerConnection.setRemoteDescription(new RTCSessionDescription(answer));
+    newSocket.on("answer", async ({answer, socketId}) => {
+      remoteSocketId = socketId;
+      if (!peerConnection.current.currentRemoteDescription) {
+        await peerConnection.current.setRemoteDescription(new RTCSessionDescription(answer));
       }
     });
 
     newSocket.on("candidate", async (candidate) => {
-      if (!candidate) {
-        return;
-      }
-
-      try {
-        await peerConnection.addIceCandidate(candidate);
-      } catch (error) {
-        console.error("Error adding received ice candidate", error);
+      if (candidate) {
+        try {
+          await peerConnection.current.addIceCandidate(candidate);
+        } catch (e) {
+          console.error("Error adding received ice candidate", e);
+        }
       }
     });
 
     return () => {
-      cleanupCall(false);
+       cleanupCall(false);
     };
-  }, [appointmentId, serverUrl, token, userType]);
+  }, []);
+
+  const startCall = async () => {
+    fetchAppointment();
+    if (!remoteSocket) return;
+    var userInput = remoteSocket;
+    const offer = await peerConnection.current.createOffer();
+    await peerConnection.current.setLocalDescription(offer);
+    socket.emit("offer", {offer, socketId: userInput});
+  };
 
   const fetchAppointment = async () => {
     try {
-      const response = await axios.get(`${serverUrl}/api/appointments/${appointmentId}`, {
+      const config = {
         headers: { Authorization: `Bearer ${token}` },
-      });
-      const peerSocketId =
-        userType === "service"
-          ? response.data.clientSocketId
-          : response.data.consultantSocketId;
-      remoteSocketIdRef.current = peerSocketId;
-      setRemoteSocket(peerSocketId);
-      return peerSocketId;
-    } catch (error) {
-      console.error("Failed to fetch appointment:", error);
-      return null;
+      };
+
+      const response = await axios.get(
+        `${serverUrl}/api/appointments/${appointmentId}`,
+        config
+      );
+      setRemoteSocket(userType == 'service' ? response.data.clientSocketId : response.data.consultantSocketId);
+
+    } catch (err) {
+      console.error("Failed to fetch appointment:", err);
     }
-  };
-
-  const startCall = async () => {
-    setCallStage("joining");
-    const peerSocketId = remoteSocket || (await fetchAppointment());
-
-    if (!peerSocketId || !socketRef.current) {
-      setCallStage("ready");
-      return;
-    }
-
-    const peerConnection = peerConnectionRef.current;
-    const offer = await peerConnection.createOffer();
-    await peerConnection.setLocalDescription(offer);
-    socketRef.current.emit("offer", { offer, socketId: peerSocketId });
-  };
-
-  const toggleMute = () => {
-    if (!localStreamRef.current) {
-      return;
-    }
-
-    const nextMuted = !isMuted;
-    localStreamRef.current.getAudioTracks().forEach((track) => {
-      track.enabled = !nextMuted;
-    });
-    setIsMuted(nextMuted);
   };
 
   function cleanupCall(shouldNavigate = true) {
@@ -228,12 +205,10 @@ const VideoCall = ({ serverUrlProp }) => {
 
     isEndingCallRef.current = true;
 
-    const peerConnection = peerConnectionRef.current;
-    if (peerConnection) {
-      peerConnection.ontrack = null;
-      peerConnection.onicecandidate = null;
-      peerConnection.onconnectionstatechange = null;
-      peerConnection.close();
+    if (peerConnection.current) {
+      peerConnection.current.ontrack = null;
+      peerConnection.current.onicecandidate = null;
+      peerConnection.current.close();
     }
 
     if (remoteStreamRef.current) {
@@ -259,50 +234,30 @@ const VideoCall = ({ serverUrlProp }) => {
       socketRef.current = null;
     }
 
-    remoteSocketIdRef.current = null;
     setRemoteStream(null);
     setLocalStream(null);
+    setSocket(null);
     setRemoteSocket(null);
-    setIsMuted(false);
-    setCallStage("ended");
 
     if (shouldNavigate) {
-      navigate("/dashboard");
+      navigate('/dashboard');
     }
   }
 
   function endCall() {
     cleanupCall(true);
-  }
+  };
 
   return (
     <div className="facetime-container">
-      {mediaError ? <p>{mediaError}</p> : null}
-      <video className="video-style" ref={remoteVideoRef} autoPlay playsInline />
-      <video className="local-video-style" ref={localVideoRef} autoPlay playsInline muted />
-      <div className="buttons-style">
-        {callStage === "ready" ? (
-          <button className="call-button" onClick={startCall}>
-            Pick Up
-          </button>
-        ) : null}
-        {callStage === "joining" ? (
-          <button className="call-button" type="button" disabled>
-            Connecting...
-          </button>
-        ) : null}
-        {(callStage === "joining" || callStage === "connected") && localStream ? (
-          <button className="mute-button" onClick={toggleMute}>
-            {isMuted ? "Unmute" : "Mute"}
-          </button>
-        ) : null}
-        {(callStage === "joining" || callStage === "connected") && localStream ? (
-          <button className="end-button" onClick={endCall}>
-            Hang Up
-          </button>
-        ) : null}
-      </div>
+    {mediaError ? <p>{mediaError}</p> : null}
+    <video className='video-style' ref={remoteVideoRef} autoPlay playsInline></video>
+    <video className='local-video-style' ref={localVideoRef} autoPlay playsInline muted></video>
+    <div className='buttons-style'>
+      { (remoteStream == null && localStream != null) ? (<button className="call-button" onClick={startCall}>📞</button>) : ''}
+      { (remoteStream != null) ? (<button className="end-button" onClick={endCall}>📞</button>) : ''}
     </div>
+  </div>
   );
 };
 

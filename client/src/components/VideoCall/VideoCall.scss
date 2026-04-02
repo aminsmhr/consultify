@@ -9,32 +9,21 @@
   
   .call-button {
     padding: 10px;
-    border-radius: 999px;
+    border-radius: 50%;
     background-color: #28a745; 
     color: white;
     border: none;
-    font-size: 16px;
-    min-width: 110px;
+    font-size: 20px;
   }
   
   .end-button {
     padding: 10px;
-    border-radius: 999px;
+    border-radius: 50%;
     background-color: #dc3545; 
     color: white;
     border: none;
-    font-size: 16px;
-    min-width: 110px;
-  }
-
-  .mute-button {
-    padding: 10px;
-    border-radius: 999px;
-    background-color: #f59f00;
-    color: white;
-    border: none;
-    font-size: 16px;
-    min-width: 110px;
+    font-size: 20px;
+    rotate: 135deg;
   }
   
   .div-style {
