@@ -1,4 +1,3 @@
-require("dotenv").config();
 const express = require("express");
 const app = express();
 const cors = require("cors");
@@ -8,6 +7,8 @@ const https = require(`https`);
 const swaggerUi = require('swagger-ui-express');
 const swaggerJSDoc = require('swagger-jsdoc');
 const fs = require('fs');
+
+require("dotenv").config({ path: path.join(__dirname, ".env") });
 app.use(express.static(path.join(__dirname, 'build')));
 
 const userRoutes = require("./routes/user");
