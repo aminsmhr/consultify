@@ -243,7 +243,6 @@ function Dashboard({ token, handleLogout }) {
             <p className="profile__eyebrow">Signed in as</p>
             <h2>{profile.first_name} {profile.last_name}</h2>
           </div>
-          <button className="profile__logout" onClick={handleLogout}>Log out</button>
         </div>
         <div className="profile__meta">
           <article>

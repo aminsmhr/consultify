@@ -37,7 +37,7 @@
     color: #fffaf4;
   }
 
-  &__badge {
+  &__action {
     padding: 0.65rem 0.95rem;
     border-radius: 999px;
     background: rgba(255, 243, 229, 0.12);
@@ -45,6 +45,14 @@
     font-size: 0.9rem;
     white-space: nowrap;
     color: #ffe8d4;
+    font-weight: 700;
+    cursor: pointer;
+    transition: transform 160ms ease, background-color 160ms ease;
+
+    &:hover {
+      transform: translateY(-1px);
+      background: rgba(255, 243, 229, 0.18);
+    }
   }
 }
 
@@ -53,7 +61,7 @@
     flex-direction: column;
     align-items: flex-start;
 
-    &__badge {
+    &__action {
       align-self: stretch;
       text-align: center;
     }

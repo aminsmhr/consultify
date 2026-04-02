@@ -26,7 +26,7 @@ function App() {
 
   return (
     <div className="app">
-      <Header title="Consultify"/>
+      <Header title="Consultify" onLogout={handleLogout} />
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<Navigate to="/dashboard" />} />
