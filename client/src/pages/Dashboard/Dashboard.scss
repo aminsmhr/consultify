@@ -23,6 +23,38 @@
       color: $text-color; // darker color for the text
       margin-bottom: 1.25rem;
     }
+
+    &__toast-stack {
+      position: fixed;
+      top: 1rem;
+      right: 1rem;
+      z-index: 1000;
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+      width: min(22rem, calc(100vw - 2rem));
+    }
+
+    &__toast {
+      padding: 1rem 1.25rem;
+      border-radius: 0.75rem;
+      color: #fff;
+      box-shadow: 0 0.75rem 1.5rem rgba(0, 0, 0, 0.18);
+
+      p {
+        margin: 0;
+        line-height: 1.4;
+      }
+    }
+
+    &__toast--active {
+      background: #1f6feb;
+    }
+
+    &__toast--new {
+      background: #1a7f37;
+      animation: toast-in 180ms ease-out;
+    }
     
     section {
       p {
@@ -39,5 +71,17 @@
       }
     }
   }
+
+@keyframes toast-in {
+  from {
+    opacity: 0;
+    transform: translateY(-0.5rem);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
   
   

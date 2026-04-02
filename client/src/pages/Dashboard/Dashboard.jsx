@@ -86,6 +86,7 @@ function Dashboard({ token, handleLogout }) {
         setActiveJoinStates(activeJoins);
 
         if (newlyJoined.length > 0) {
+          playNotificationSound();
           setJoinNotifications((current) => {
             const seen = new Set(current.map((notification) => notification.id));
             return [
@@ -109,6 +110,54 @@ function Dashboard({ token, handleLogout }) {
       clearInterval(intervalId);
     };
   }, [profile, serverUrl, token]);
+
+  useEffect(() => {
+    if (joinNotifications.length === 0) {
+      return undefined;
+    }
+
+    const timers = joinNotifications.map((notification) =>
+      window.setTimeout(() => {
+        setJoinNotifications((current) =>
+          current.filter((item) => item.id !== notification.id)
+        );
+      }, 6000)
+    );
+
+    return () => {
+      timers.forEach((timer) => window.clearTimeout(timer));
+    };
+  }, [joinNotifications]);
+
+  const playNotificationSound = () => {
+    if (typeof window === "undefined") {
+      return;
+    }
+
+    const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+    if (!AudioContextClass) {
+      return;
+    }
+
+    const audioContext = new AudioContextClass();
+    const oscillator = audioContext.createOscillator();
+    const gainNode = audioContext.createGain();
+
+    oscillator.type = "sine";
+    oscillator.frequency.setValueAtTime(880, audioContext.currentTime);
+    oscillator.frequency.exponentialRampToValueAtTime(660, audioContext.currentTime + 0.18);
+    gainNode.gain.setValueAtTime(0.0001, audioContext.currentTime);
+    gainNode.gain.exponentialRampToValueAtTime(0.12, audioContext.currentTime + 0.02);
+    gainNode.gain.exponentialRampToValueAtTime(0.0001, audioContext.currentTime + 0.35);
+
+    oscillator.connect(gainNode);
+    gainNode.connect(audioContext.destination);
+    oscillator.start(audioContext.currentTime);
+    oscillator.stop(audioContext.currentTime + 0.35);
+    oscillator.onended = () => {
+      audioContext.close();
+    };
+  };
 
   function eventAppointmentMade(e) {
     setAppointmentMade(!appointmentMade);
@@ -151,17 +200,18 @@ function Dashboard({ token, handleLogout }) {
   return (
     <main className="dashboard">
       <h1 className="dashboard__title">Dashboard</h1>
-      {activeJoinStates.length > 0 || joinNotifications.length > 0 ? (
-        <section className="profile">
-          <p><strong>Notifications</strong></p>
-          {activeJoinStates.map((notification) => (
-            <p key={notification.id}>{notification.message}</p>
-          ))}
-          {joinNotifications.map((notification) => (
-            <p key={notification.id}>{notification.message}</p>
-          ))}
-        </section>
-      ) : null}
+      <div className="dashboard__toast-stack">
+        {activeJoinStates.map((notification) => (
+          <div key={notification.id} className="dashboard__toast dashboard__toast--active">
+            <p>{notification.message}</p>
+          </div>
+        ))}
+        {joinNotifications.map((notification) => (
+          <div key={notification.id} className="dashboard__toast dashboard__toast--new">
+            <p>{notification.message}</p>
+          </div>
+        ))}
+      </div>
       {profile && <section className="profile">
         <p>Name: {profile.first_name} {profile.last_name}</p>
         <p>Address: {profile.address}</p>
