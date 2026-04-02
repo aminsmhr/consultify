@@ -10,6 +10,10 @@ const VideoCall = ({ serverUrlProp }) => {
   const navigate = useNavigate();
   const localVideoRef = useRef(null);
   const remoteVideoRef = useRef(null);
+  const socketRef = useRef(null);
+  const localStreamRef = useRef(null);
+  const remoteStreamRef = useRef(null);
+  const isEndingCallRef = useRef(false);
   const [socket, setSocket] = useState(null);
   const [remoteSocket, setRemoteSocket] = useState(null);
   const [localStream, setLocalStream] = useState(null);
@@ -53,6 +57,7 @@ const VideoCall = ({ serverUrlProp }) => {
     let remoteSocketId = null;
     let candidates =[];
     const newSocket = io(serverUrl);
+    socketRef.current = newSocket;
     setSocket(newSocket);
 
     /* const iceServers = (async () => {const response =  await fetch("https://amin.metered.live/api/v1/turn/credentials?apiKey=c1a6e573176dc6e913665a630406ea24b038");
@@ -67,6 +72,7 @@ const VideoCall = ({ serverUrlProp }) => {
         .getUserMedia({ video: true, audio: true })
         .then((stream) => {
           localVideoRef.current.srcObject = stream;
+          localStreamRef.current = stream;
           setLocalStream(stream);
           stream.getTracks().forEach((track) => {
             peerConnection.current.addTrack(track, stream);
@@ -107,6 +113,7 @@ const VideoCall = ({ serverUrlProp }) => {
     );
 
     peerConnection.current.ontrack = (event) => {
+      remoteStreamRef.current = event.streams[0];
       setRemoteStream(event.streams[0]);
       remoteVideoRef.current.srcObject = event.streams[0];
     };
@@ -161,8 +168,7 @@ const VideoCall = ({ serverUrlProp }) => {
     });
 
     return () => {
-       newSocket.close();
-       endCall();
+       cleanupCall(false);
     };
   }, []);
 
@@ -192,25 +198,54 @@ const VideoCall = ({ serverUrlProp }) => {
     }
   };
 
-  function endCall() {
+  function cleanupCall(shouldNavigate = true) {
+    if (isEndingCallRef.current) {
+      return;
+    }
+
+    isEndingCallRef.current = true;
+
     if (peerConnection.current) {
+      peerConnection.current.ontrack = null;
+      peerConnection.current.onicecandidate = null;
       peerConnection.current.close();
     }
 
-    if (remoteStream) {
-      remoteStream.getTracks().forEach(track => track.stop());
+    if (remoteStreamRef.current) {
+      remoteStreamRef.current.getTracks().forEach((track) => track.stop());
+      remoteStreamRef.current = null;
     }
 
-    if (localStream) {
-      localStream.getTracks().forEach(track => track.stop());
+    if (localStreamRef.current) {
+      localStreamRef.current.getTracks().forEach((track) => track.stop());
+      localStreamRef.current = null;
     }
 
-    if (socket) {
-      socket.disconnect();
+    if (remoteVideoRef.current) {
+      remoteVideoRef.current.srcObject = null;
+    }
+
+    if (localVideoRef.current) {
+      localVideoRef.current.srcObject = null;
+    }
+
+    if (socketRef.current) {
+      socketRef.current.disconnect();
+      socketRef.current = null;
     }
 
     setRemoteStream(null);
-    navigate('/dashboard');
+    setLocalStream(null);
+    setSocket(null);
+    setRemoteSocket(null);
+
+    if (shouldNavigate) {
+      navigate('/dashboard');
+    }
+  }
+
+  function endCall() {
+    cleanupCall(true);
   };
 
   return (
