@@ -51,6 +51,7 @@ const VideoCall = ({ serverUrlProp }) => {
   const [remoteStream, setRemoteStream] = useState(null);
   const [mediaError, setMediaError] = useState("");
   const [isMuted, setIsMuted] = useState(false);
+  const hasRemoteStream = Boolean(remoteStream);
 
   useEffect(() => {
     let remoteSocketId = null;
@@ -164,6 +165,18 @@ const VideoCall = ({ serverUrlProp }) => {
     };
   }, []);
 
+  useEffect(() => {
+    if (localVideoRef.current) {
+      localVideoRef.current.srcObject = localStream;
+    }
+  }, [localStream, hasRemoteStream]);
+
+  useEffect(() => {
+    if (remoteVideoRef.current) {
+      remoteVideoRef.current.srcObject = remoteStream;
+    }
+  }, [remoteStream, hasRemoteStream]);
+
   const fetchAppointment = async () => {
     try {
       const config = {
@@ -263,10 +276,33 @@ const VideoCall = ({ serverUrlProp }) => {
   return (
     <div className="facetime-container">
       {mediaError ? <p>{mediaError}</p> : null}
-      <video className="video-style" ref={remoteVideoRef} autoPlay playsInline></video>
-      <video className="local-video-style" ref={localVideoRef} autoPlay playsInline muted></video>
+      {!hasRemoteStream ? (
+        <div className="facetime-container__lobby">
+          <div className="facetime-container__lobby-copy">
+            <span className="facetime-container__eyebrow">Ready to join</span>
+            <h1>Preview your camera before you enter the appointment.</h1>
+            <p>
+              Your audio and video are on standby. When you are ready, pick up to start the session.
+            </p>
+          </div>
+        </div>
+      ) : null}
+      <video
+        className={`video-style ${hasRemoteStream ? "video-style--remote" : "video-style--local"}`}
+        ref={hasRemoteStream ? remoteVideoRef : localVideoRef}
+        autoPlay
+        playsInline
+        muted={!hasRemoteStream}
+      ></video>
+      <video
+        className={`local-video-style ${hasRemoteStream ? "local-video-style--visible" : "local-video-style--hidden"}`}
+        ref={hasRemoteStream ? localVideoRef : remoteVideoRef}
+        autoPlay
+        playsInline
+        muted
+      ></video>
       <div className="buttons-style">
-        {remoteStream == null && localStream != null ? (
+        {!hasRemoteStream && localStream != null ? (
           <button className="call-button" onClick={startCall}>
             Pick up
           </button>
