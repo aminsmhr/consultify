@@ -3,6 +3,7 @@ import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import MakeAppointment from "../../components/MakeAppointment/MakeAppointment";
 import ConsultantList from "../../components/ConsultantList/ConsultantList";
+import ClientWorkspace from "../../components/ClientWorkspace/ClientWorkspace";
 import axios from "axios";
 import AppointmentsList from "../../components/AppointmentList/AppointmentsList";
 import { getServerUrl } from "../../lib/serverUrl";
@@ -270,13 +271,21 @@ function Dashboard({ token, handleLogout }) {
           </button>
         </div>
       </section>}
-      {profile && (profile.type === 1) ?  <>
-        <MakeAppointment consultants={consultants} token={token} onAppointmentMade={eventAppointmentMade} />  
-        <ConsultantList token={token} reload={appointmentMade}/>
-      </> :
-      (<>
-       <AppointmentsList token={token}/>
-       </>
+      {profile && profile.type === 1 ? (
+        <>
+          <MakeAppointment
+            consultants={consultants}
+            token={token}
+            onAppointmentMade={eventAppointmentMade}
+          />
+          <ConsultantList token={token} reload={appointmentMade} />
+          <ClientWorkspace token={token} profile={profile} />
+        </>
+      ) : (
+        <>
+          <AppointmentsList token={token} />
+          <ClientWorkspace token={token} profile={profile} />
+        </>
       )}
      </main>
   );

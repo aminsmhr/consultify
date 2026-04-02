@@ -14,6 +14,7 @@ app.use(express.static(path.join(__dirname, 'build')));
 
 const userRoutes = require("./routes/user");
 const appointmentRoutes = require('./routes/appointments'); 
+const clientWorkspaceRoutes = require("./routes/clientWorkspace");
 const knex = require("knex")(require("./knexfile"));
 
 const PORT = process.env.PORT || 8080;
@@ -101,6 +102,7 @@ app.set("emitAppointmentPresenceById", emitAppointmentPresenceById);
 // Routes
 app.use("/api/user", userRoutes);
 app.use('/api/appointments', appointmentRoutes);
+app.use("/api/client-workspace", clientWorkspaceRoutes);
 
 app.use(express.static(path.join(__dirname, '../client/dist/')));
 
