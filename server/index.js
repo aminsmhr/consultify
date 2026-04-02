@@ -13,6 +13,7 @@ app.use(express.static(path.join(__dirname, 'build')));
 
 const userRoutes = require("./routes/user");
 const appointmentRoutes = require('./routes/appointments'); 
+const knex = require("knex")(require("./knexfile"));
 
 const PORT = process.env.PORT || 8080;
 
@@ -92,11 +93,23 @@ socket.emit("me", socket.id)
   socket.on('candidate', ({offerCandidates, socketId})=>{
       io.to(socketId).emit('candidate', offerCandidates);
   })
-  socket.on('disconnect',()=> {
+  socket.on('disconnect', async ()=> {
     const newConnectedPeers = connectedPeers.filter((socketPeer)=>{
          return socketPeer !== socket.id
      });
      connectedPeers = newConnectedPeers;
+
+     try {
+      await knex("appointments")
+        .where({ client_socket_id: socket.id })
+        .update({ client_socket_id: null });
+
+      await knex("appointments")
+        .where({ consultant_socket_id: socket.id })
+        .update({ consultant_socket_id: null });
+     } catch (error) {
+      console.error("Failed to clear disconnected socket from appointments:", error);
+     }
  });
 });
 httpServer.listen(PORT-1, '0.0.0.0', ()=>{
