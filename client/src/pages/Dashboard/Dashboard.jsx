@@ -12,6 +12,7 @@ function Dashboard({ token, handleLogout }) {
   const [consultants, setConsultants] = useState([]);
   const [appointmentMade, setAppointmentMade] = useState(false);
   const [joinNotifications, setJoinNotifications] = useState([]);
+  const [activeJoinStates, setActiveJoinStates] = useState([]);
   const previousAppointmentState = useRef({});
 
   const serverUrl = getServerUrl();
@@ -43,6 +44,7 @@ function Dashboard({ token, handleLogout }) {
         const isClient = String(profile.type) === "1";
         const nextState = {};
         const newlyJoined = [];
+        const activeJoins = [];
 
         data.forEach((appointment) => {
           const peerSocketId = isClient
@@ -57,6 +59,13 @@ function Dashboard({ token, handleLogout }) {
             appointmentStatus: appointment.appointmentStatus,
             peerName,
           };
+
+          if (appointment.appointmentStatus === "accepted" && peerSocketId) {
+            activeJoins.push({
+              id: `active-${appointment.appointmentId}`,
+              message: `${peerName} is in appointment #${appointment.appointmentId} now.`,
+            });
+          }
 
           const previous = previousAppointmentState.current[appointment.appointmentId];
           const peerJustJoined =
@@ -74,6 +83,7 @@ function Dashboard({ token, handleLogout }) {
         });
 
         previousAppointmentState.current = nextState;
+        setActiveJoinStates(activeJoins);
 
         if (newlyJoined.length > 0) {
           setJoinNotifications((current) => {
@@ -141,9 +151,12 @@ function Dashboard({ token, handleLogout }) {
   return (
     <main className="dashboard">
       <h1 className="dashboard__title">Dashboard</h1>
-      {joinNotifications.length > 0 ? (
+      {activeJoinStates.length > 0 || joinNotifications.length > 0 ? (
         <section className="profile">
           <p><strong>Notifications</strong></p>
+          {activeJoinStates.map((notification) => (
+            <p key={notification.id}>{notification.message}</p>
+          ))}
           {joinNotifications.map((notification) => (
             <p key={notification.id}>{notification.message}</p>
           ))}
