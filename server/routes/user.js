@@ -192,6 +192,81 @@ router.get("/current", authorize, async (req, res) => {
 
 /**
  * @swagger
+ * /api/user/current:
+ *   patch:
+ *     summary: Update the currently authenticated user
+ *     tags: [Users]
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               first_name:
+ *                 type: string
+ *               last_name:
+ *                 type: string
+ *               phone:
+ *                 type: string
+ *               address:
+ *                 type: string
+ *               email:
+ *                 type: string
+ *                 format: email
+ *               password:
+ *                 type: string
+ *                 format: password
+ *     responses:
+ *       200:
+ *         description: Updated user profile
+ *       400:
+ *         description: Invalid request
+ */
+router.patch("/current", authorize, async (req, res) => {
+  const { first_name, last_name, phone, address, email, password } = req.body;
+
+  if (!first_name || !last_name || !email) {
+    return res.status(400).json({ error: "First name, last name, and email are required." });
+  }
+
+  try {
+    const existingUser = await knex("users")
+      .where({ email })
+      .whereNot({ id: req.user.id })
+      .first();
+
+    if (existingUser) {
+      return res.status(400).json({ error: "Email is already in use." });
+    }
+
+    const updates = {
+      first_name,
+      last_name,
+      phone: phone || null,
+      address: address || null,
+      email,
+    };
+
+    if (password) {
+      updates.password = bcrypt.hashSync(password);
+    }
+
+    await knex("users").where({ id: req.user.id }).update(updates);
+    const updatedUser = await knex("users").where({ id: req.user.id }).first();
+    const { password: hiddenPassword, ...userSansPw } = updatedUser;
+
+    res.json(userSansPw);
+  } catch (error) {
+    console.error(error);
+    res.status(400).json({ error: "Failed to update profile.", message: error.message });
+  }
+});
+
+/**
+ * @swagger
  * /api/user/consultants:
  *   get:
  *     summary: List available consultants

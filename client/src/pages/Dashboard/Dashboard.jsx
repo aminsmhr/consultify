@@ -1,5 +1,6 @@
 import "./Dashboard.scss";
 import { useEffect, useRef, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import MakeAppointment from "../../components/MakeAppointment/MakeAppointment";
 import ConsultantList from "../../components/ConsultantList/ConsultantList";
 import axios from "axios";
@@ -15,6 +16,7 @@ function Dashboard({ token, handleLogout }) {
   const [joinNotifications, setJoinNotifications] = useState([]);
   const [activeJoinStates, setActiveJoinStates] = useState([]);
   const previousAppointmentState = useRef({});
+  const navigate = useNavigate();
 
   const serverUrl = getServerUrl();
 
@@ -261,6 +263,11 @@ function Dashboard({ token, handleLogout }) {
             <span>Address</span>
             <strong>{profile.address}</strong>
           </article>
+        </div>
+        <div className="profile__actions">
+          <button className="profile__button" onClick={() => navigate("/profile/edit")}>
+            Edit profile
+          </button>
         </div>
       </section>}
       {profile && (profile.type === 1) ?  <>
