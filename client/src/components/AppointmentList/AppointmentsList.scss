@@ -11,6 +11,11 @@
   box-shadow: $shadow-md;
 }
 
+.appointments-list--loading {
+  display: grid;
+  gap: 1rem;
+}
+
 .appointments-title {
   margin: 0 0 1.25rem;
   font-family: $font-stack;
@@ -93,6 +98,19 @@
   color: $text-color;
 }
 
+.appointments-skeleton {
+  height: 7.5rem;
+  border-radius: $radius-md;
+  background: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0.42),
+    rgba(255, 255, 255, 0.72),
+    rgba(255, 255, 255, 0.42)
+  );
+  background-size: 200% 100%;
+  animation: appointments-skeleton 1.35s ease-in-out infinite;
+}
+
 @media (max-width: 768px) {
   .appointments-list {
     padding: 1.3rem;
@@ -100,5 +118,15 @@
 
   .appointment-actions .btn {
     width: 100%;
+  }
+}
+
+@keyframes appointments-skeleton {
+  0% {
+    background-position: 200% 0;
+  }
+
+  100% {
+    background-position: -200% 0;
   }
 }

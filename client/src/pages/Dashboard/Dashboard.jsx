@@ -206,7 +206,26 @@ function Dashboard({ token, profile }) {
   }
 
   if (isLoading || !profile) {
-    return <p>Loading...</p>
+    return (
+      <main className="dashboard">
+        <section className="dashboard__hero dashboard__hero--loading">
+          <div className="dashboard__skeleton dashboard__skeleton--eyebrow"></div>
+          <div className="dashboard__skeleton dashboard__skeleton--title"></div>
+          <div className="dashboard__skeleton dashboard__skeleton--subtitle"></div>
+        </section>
+        <section className="dashboard__tabs">
+          <div className="dashboard__tab-list">
+            <div className="dashboard__tab dashboard__tab--placeholder"></div>
+            <div className="dashboard__tab dashboard__tab--placeholder"></div>
+            <div className="dashboard__tab dashboard__tab--placeholder"></div>
+          </div>
+          <div className="dashboard__loading-panel">
+            <div className="dashboard__skeleton dashboard__skeleton--card"></div>
+            <div className="dashboard__skeleton dashboard__skeleton--card"></div>
+          </div>
+        </section>
+      </main>
+    );
   }
 
   return (

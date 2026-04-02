@@ -81,7 +81,19 @@ const MakeAppointment = ({ consultants, token, onAppointmentMade }) => {
   };
 
   if (!consultants || isLoading && consultants.length === 0) {
-    return <p>Loading ...</p>;
+    return (
+      <section className="make-appointment make-appointment--loading">
+        <div className="make-appointment__header">
+          <div className="make-appointment__skeleton make-appointment__skeleton--eyebrow"></div>
+          <div className="make-appointment__skeleton make-appointment__skeleton--title"></div>
+        </div>
+        <div className="make-appointment__loading-grid">
+          <div className="make-appointment__skeleton make-appointment__skeleton--consultant"></div>
+          <div className="make-appointment__skeleton make-appointment__skeleton--consultant"></div>
+          <div className="make-appointment__skeleton make-appointment__skeleton--scheduler"></div>
+        </div>
+      </section>
+    );
   }
 
   return (

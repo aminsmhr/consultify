@@ -127,6 +127,51 @@
     top: 1rem;
   }
 
+  &--loading {
+    .make-appointment__header {
+      display: grid;
+      gap: 0.55rem;
+    }
+  }
+
+  &__loading-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1.5fr) minmax(320px, 0.95fr);
+    gap: 1rem;
+  }
+
+  &__skeleton {
+    border-radius: 1rem;
+    background: linear-gradient(
+      90deg,
+      rgba(255, 255, 255, 0.42),
+      rgba(255, 255, 255, 0.72),
+      rgba(255, 255, 255, 0.42)
+    );
+    background-size: 200% 100%;
+    animation: make-appointment-skeleton 1.35s ease-in-out infinite;
+  }
+
+  &__skeleton--eyebrow {
+    width: 8rem;
+    height: 0.8rem;
+    border-radius: 999px;
+  }
+
+  &__skeleton--title {
+    width: min(24rem, 70%);
+    height: 2rem;
+    border-radius: 999px;
+  }
+
+  &__skeleton--consultant {
+    min-height: 8rem;
+  }
+
+  &__skeleton--scheduler {
+    min-height: 18rem;
+  }
+
   &__scheduler-head {
     h3 {
       margin: 0.18rem 0 0;
@@ -246,6 +291,10 @@
     &__scheduler {
       position: static;
     }
+
+    &__loading-grid {
+      grid-template-columns: 1fr;
+    }
   }
 }
 
@@ -260,5 +309,43 @@
     &__time-grid {
       grid-template-columns: repeat(2, minmax(0, 1fr));
     }
+
+    &__scheduler {
+      padding: 0.9rem;
+    }
+
+    &__scheduler-head {
+      text-align: left;
+    }
+
+    &__time-grid {
+      grid-template-columns: 1fr 1fr;
+    }
+
+    &__loading-grid {
+      grid-template-columns: 1fr;
+    }
+
+    &__field,
+    &__time-picker,
+    &__summary {
+      width: 100%;
+    }
+
+    &__input,
+    &__time-slot,
+    &__button {
+      min-height: 3rem;
+    }
+  }
+}
+
+@keyframes make-appointment-skeleton {
+  0% {
+    background-position: 200% 0;
+  }
+
+  100% {
+    background-position: -200% 0;
   }
 }

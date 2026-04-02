@@ -210,6 +210,35 @@
   gap: 0.9rem;
 }
 
+.client-workspace__loading-stack {
+  display: grid;
+  gap: 0.8rem;
+}
+
+.client-workspace__skeleton {
+  border-radius: 1rem;
+  background: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0.42),
+    rgba(255, 255, 255, 0.72),
+    rgba(255, 255, 255, 0.42)
+  );
+  background-size: 200% 100%;
+  animation: client-workspace-skeleton 1.35s ease-in-out infinite;
+}
+
+.client-workspace__skeleton--contact {
+  height: 6rem;
+}
+
+.client-workspace__skeleton--message {
+  height: 7rem;
+}
+
+.client-workspace__skeleton--message-short {
+  width: 72%;
+}
+
 .client-workspace__message {
   max-width: 80%;
   padding: 0.95rem 1rem;
@@ -322,5 +351,15 @@
 @media (max-width: 900px) {
   .client-workspace__layout {
     grid-template-columns: 1fr;
+  }
+}
+
+@keyframes client-workspace-skeleton {
+  0% {
+    background-position: 200% 0;
+  }
+
+  100% {
+    background-position: -200% 0;
   }
 }

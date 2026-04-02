@@ -61,7 +61,13 @@ function ConsultantList({token, reload}) {
           ) ;
       }
       if (isLoading) {
-        return <p>Loading...</p>
+        return (
+          <div className="consultant-list consultant-list--loading">
+              <h2 className='make-appointment__title'>Appointment List</h2>
+              <div className="consultant-skeleton"></div>
+              <div className="consultant-skeleton"></div>
+          </div>
+        );
       }
 
       return (

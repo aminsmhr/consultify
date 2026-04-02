@@ -105,7 +105,13 @@ const AppointmentsList = ({ token }) => {
   }
 
   if (isLoading) {
-    return <p className="loading">Loading appointments...</p>;
+    return (
+      <div className="appointments-list appointments-list--loading">
+        <h2 className="appointments-title">Your Appointments</h2>
+        <div className="appointments-skeleton"></div>
+        <div className="appointments-skeleton"></div>
+      </div>
+    );
   }
 
   return (

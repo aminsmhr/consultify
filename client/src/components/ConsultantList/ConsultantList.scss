@@ -21,6 +21,10 @@
   }
 }
 
+.consultant-list--loading {
+  gap: 1rem;
+}
+
 .grid-container {
   display: flex;
   flex-direction: column;
@@ -71,5 +75,28 @@ button.book-appointment {
   &:hover {
     transform: translateY(-1px);
     box-shadow: 0 18px 32px rgba(77, 48, 34, 0.22);
+  }
+}
+
+.consultant-skeleton {
+  height: 5.2rem;
+  border-radius: 1rem;
+  background: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0.42),
+    rgba(255, 255, 255, 0.72),
+    rgba(255, 255, 255, 0.42)
+  );
+  background-size: 200% 100%;
+  animation: consultant-skeleton 1.35s ease-in-out infinite;
+}
+
+@keyframes consultant-skeleton {
+  0% {
+    background-position: 200% 0;
+  }
+
+  100% {
+    background-position: -200% 0;
   }
 }

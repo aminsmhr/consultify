@@ -21,6 +21,12 @@
     box-shadow: $shadow-lg;
   }
 
+  &__hero--loading {
+    display: flex;
+    flex-direction: column;
+    gap: 0.7rem;
+  }
+
   &__eyebrow {
     margin: 0 0 0.55rem;
     font-size: 0.72rem;
@@ -108,6 +114,12 @@
     }
   }
 
+  &__tab--placeholder {
+    min-width: 6.5rem;
+    min-height: 2.6rem;
+    pointer-events: none;
+  }
+
   &__tab--active {
     background: linear-gradient(135deg, $eco-color1, $eco-color2);
     color: $text-color-light;
@@ -118,6 +130,43 @@
     display: flex;
     flex-direction: column;
     gap: 0.9rem;
+  }
+
+  &__loading-panel {
+    display: grid;
+    gap: 0.9rem;
+  }
+
+  &__skeleton {
+    border-radius: 999px;
+    background: linear-gradient(
+      90deg,
+      rgba(255, 255, 255, 0.24),
+      rgba(255, 255, 255, 0.44),
+      rgba(255, 255, 255, 0.24)
+    );
+    background-size: 200% 100%;
+    animation: dashboard-skeleton 1.35s ease-in-out infinite;
+  }
+
+  &__skeleton--eyebrow {
+    width: 8rem;
+    height: 0.8rem;
+  }
+
+  &__skeleton--title {
+    width: min(24rem, 70%);
+    height: 2.3rem;
+  }
+
+  &__skeleton--subtitle {
+    width: min(34rem, 88%);
+    height: 1rem;
+  }
+
+  &__skeleton--card {
+    height: 10rem;
+    border-radius: 1.2rem;
   }
 
   section {
@@ -154,5 +203,15 @@
   to {
     opacity: 1;
     transform: translateY(0);
+  }
+}
+
+@keyframes dashboard-skeleton {
+  0% {
+    background-position: 200% 0;
+  }
+
+  100% {
+    background-position: -200% 0;
   }
 }

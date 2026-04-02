@@ -203,7 +203,11 @@ function ClientWorkspace({ token, profile, mode = "messages" }) {
         <aside className="client-workspace__sidebar">
           <h3>{isConsultant ? "Clients" : "Consultants"}</h3>
           {isLoadingContacts ? (
-            <p className="client-workspace__empty">Loading contacts...</p>
+            <div className="client-workspace__loading-stack">
+              <div className="client-workspace__skeleton client-workspace__skeleton--contact"></div>
+              <div className="client-workspace__skeleton client-workspace__skeleton--contact"></div>
+              <div className="client-workspace__skeleton client-workspace__skeleton--contact"></div>
+            </div>
           ) : contacts.length ? (
             <div className="client-workspace__contact-list">
               {contacts.map((contact) => (
@@ -300,7 +304,11 @@ function ClientWorkspace({ token, profile, mode = "messages" }) {
                 <div className="client-workspace__thread">
                   <div className="client-workspace__messages">
                     {isLoadingConversation ? (
-                      <p className="client-workspace__empty">Loading conversation...</p>
+                      <div className="client-workspace__loading-stack">
+                        <div className="client-workspace__skeleton client-workspace__skeleton--message"></div>
+                        <div className="client-workspace__skeleton client-workspace__skeleton--message client-workspace__skeleton--message-short"></div>
+                        <div className="client-workspace__skeleton client-workspace__skeleton--message"></div>
+                      </div>
                     ) : conversation.messages.length ? (
                       conversation.messages.map((message) => (
                         <article
