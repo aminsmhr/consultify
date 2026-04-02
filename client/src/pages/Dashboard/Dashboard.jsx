@@ -1,5 +1,5 @@
 import "./Dashboard.scss";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import MakeAppointment from "../../components/MakeAppointment/MakeAppointment";
 import ConsultantList from "../../components/ConsultantList/ConsultantList";
 import axios from "axios";
@@ -11,6 +11,8 @@ function Dashboard({ token, handleLogout }) {
   const [isLoading, setIsLoading] = useState(true);
   const [consultants, setConsultants] = useState([]);
   const [appointmentMade, setAppointmentMade] = useState(false);
+  const [joinNotifications, setJoinNotifications] = useState([]);
+  const previousAppointmentState = useRef({});
 
   const serverUrl = getServerUrl();
 
@@ -18,6 +20,86 @@ function Dashboard({ token, handleLogout }) {
     (async ()=> await fetchConsultants())();
     fetchProfile();
   }, []);
+
+  useEffect(() => {
+    if (!profile) {
+      return undefined;
+    }
+
+    let isCancelled = false;
+
+    const pollAppointments = async (seedOnly = false) => {
+      try {
+        const { data } = await axios.get(`${serverUrl}/api/appointments/list`, {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        });
+
+        if (isCancelled) {
+          return;
+        }
+
+        const isClient = String(profile.type) === "1";
+        const nextState = {};
+        const newlyJoined = [];
+
+        data.forEach((appointment) => {
+          const peerSocketId = isClient
+            ? appointment.consultantSocketId
+            : appointment.clientSocketId;
+          const peerName = isClient
+            ? `${appointment.consultantFirstName} ${appointment.consultantLastName}`
+            : `${appointment.clientFirstName} ${appointment.clientLastName}`;
+
+          nextState[appointment.appointmentId] = {
+            peerSocketId,
+            appointmentStatus: appointment.appointmentStatus,
+            peerName,
+          };
+
+          const previous = previousAppointmentState.current[appointment.appointmentId];
+          const peerJustJoined =
+            !seedOnly &&
+            appointment.appointmentStatus === "accepted" &&
+            peerSocketId &&
+            (!previous || !previous.peerSocketId);
+
+          if (peerJustJoined) {
+            newlyJoined.push({
+              id: `${appointment.appointmentId}-${peerSocketId}`,
+              message: `${peerName} joined appointment #${appointment.appointmentId}.`,
+            });
+          }
+        });
+
+        previousAppointmentState.current = nextState;
+
+        if (newlyJoined.length > 0) {
+          setJoinNotifications((current) => {
+            const seen = new Set(current.map((notification) => notification.id));
+            return [
+              ...newlyJoined.filter((notification) => !seen.has(notification.id)),
+              ...current,
+            ].slice(0, 5);
+          });
+        }
+      } catch (error) {
+        console.error("Error checking joined appointments:", error);
+      }
+    };
+
+    pollAppointments(true);
+    const intervalId = setInterval(() => {
+      pollAppointments(false);
+    }, 10000);
+
+    return () => {
+      isCancelled = true;
+      clearInterval(intervalId);
+    };
+  }, [profile, serverUrl, token]);
+
   function eventAppointmentMade(e) {
     setAppointmentMade(!appointmentMade);
   }
@@ -59,6 +141,14 @@ function Dashboard({ token, handleLogout }) {
   return (
     <main className="dashboard">
       <h1 className="dashboard__title">Dashboard</h1>
+      {joinNotifications.length > 0 ? (
+        <section className="profile">
+          <p><strong>Notifications</strong></p>
+          {joinNotifications.map((notification) => (
+            <p key={notification.id}>{notification.message}</p>
+          ))}
+        </section>
+      ) : null}
       {profile && <section className="profile">
         <p>Name: {profile.first_name} {profile.last_name}</p>
         <p>Address: {profile.address}</p>
