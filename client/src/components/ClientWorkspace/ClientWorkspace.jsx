@@ -130,6 +130,21 @@ function ClientWorkspace({ token, profile, mode = "messages" }) {
   const selectedContact = contacts.find((contact) => contact.id === selectedContactId) || null;
   const shouldShowSidebar = !isMobileView || !showMobileDetail;
   const shouldShowMain = !isMobileView || showMobileDetail;
+  const getContactStatus = (contact) => {
+    if (!contact?.latestMessageAt) {
+      return "No activity yet";
+    }
+
+    if (contact.unreadCount) {
+      return `${contact.unreadCount} unread`;
+    }
+
+    if (contact.latestMessageSenderId === profile?.id) {
+      return contact.latestMessageIsRead ? "Read" : "Sent";
+    }
+
+    return "Received";
+  };
 
   const handleFileChange = (event) => {
     setComposer((current) => ({
@@ -280,7 +295,7 @@ function ClientWorkspace({ token, profile, mode = "messages" }) {
                           : "View shared activity"}
                     </small>
                   )}
-                  {mode === "messages" && contact.unreadCount ? <em>{contact.unreadCount} new</em> : null}
+                  {mode === "messages" ? <em>{getContactStatus(contact)}</em> : null}
                 </button>
               ))}
             </div>
@@ -388,7 +403,18 @@ function ClientWorkspace({ token, profile, mode = "messages" }) {
                               ))}
                             </div>
                           ) : null}
-                          <small>{new Date(message.createdAt).toLocaleString()}</small>
+                          <div className="client-workspace__message-meta">
+                            <small>{new Date(message.createdAt).toLocaleString()}</small>
+                            {message.senderId === profile.id ? (
+                              <small className="client-workspace__message-status">
+                                {message.isRead ? "Read" : "Sent"}
+                              </small>
+                            ) : !message.isRead ? (
+                              <small className="client-workspace__message-status client-workspace__message-status--unread">
+                                New
+                              </small>
+                            ) : null}
+                          </div>
                         </article>
                       ))
                     ) : (

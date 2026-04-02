@@ -187,6 +187,8 @@ router.get("/contacts", authorize, async (req, res) => {
           latestMessageAt: message.createdAt,
           latestMessageSubject: message.subject || "",
           unreadCount: 0,
+          latestMessageSenderId: message.senderId,
+          latestMessageIsRead: Boolean(message.isRead),
         });
       }
 
@@ -194,6 +196,8 @@ router.get("/contacts", authorize, async (req, res) => {
       if (!current.latestMessageAt || new Date(message.createdAt) > new Date(current.latestMessageAt)) {
         current.latestMessageAt = message.createdAt;
         current.latestMessageSubject = message.subject || "";
+        current.latestMessageSenderId = message.senderId;
+        current.latestMessageIsRead = Boolean(message.isRead);
       }
       if (message.recipientId === req.user.id && !message.isRead) {
         current.unreadCount += 1;
@@ -205,6 +209,8 @@ router.get("/contacts", authorize, async (req, res) => {
       latestMessageAt: messageMap.get(contact.id)?.latestMessageAt || null,
       latestMessageSubject: messageMap.get(contact.id)?.latestMessageSubject || "",
       unreadCount: messageMap.get(contact.id)?.unreadCount || 0,
+      latestMessageSenderId: messageMap.get(contact.id)?.latestMessageSenderId || null,
+      latestMessageIsRead: messageMap.get(contact.id)?.latestMessageIsRead || false,
       noteText: noteMap.get(contact.id)?.noteText || "",
       noteUpdatedAt: noteMap.get(contact.id)?.updatedAt || null,
     }));
@@ -232,6 +238,15 @@ router.get("/conversations/:contactId", authorize, async (req, res) => {
       return res.status(404).send("Contact not found");
     }
 
+    await knex("client_messages")
+      .where({
+        consultant_id: pair.consultantId,
+        client_id: pair.clientId,
+        recipient_id: req.user.id,
+        is_read: false,
+      })
+      .update({ is_read: true });
+
     const messages = await knex("client_messages")
       .where({
         consultant_id: pair.consultantId,
@@ -256,15 +271,6 @@ router.get("/conversations/:contactId", authorize, async (req, res) => {
       accumulator[attachment.messageId].push(attachment);
       return accumulator;
     }, {});
-
-    await knex("client_messages")
-      .where({
-        consultant_id: pair.consultantId,
-        client_id: pair.clientId,
-        recipient_id: req.user.id,
-        is_read: false,
-      })
-      .update({ is_read: true });
 
     const note =
       String(req.user.type) === "0"
