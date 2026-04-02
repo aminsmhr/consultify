@@ -15,6 +15,7 @@ const VideoCall = ({ serverUrlProp }) => {
   const [localStream, setLocalStream] = useState(null);
   const [remoteStream, setRemoteStream] = useState(null);
   const [callStatus, setCallStatus] = useState(false);
+  const [mediaError, setMediaError] = useState("");
   const peerConnection = useRef(new RTCPeerConnection({
     iceServers: [
       {
@@ -59,15 +60,23 @@ const VideoCall = ({ serverUrlProp }) => {
      */
     
 
-    navigator.mediaDevices.getUserMedia({ video: true, audio: true })
-      .then(stream => {
-        localVideoRef.current.srcObject = stream;
-       setLocalStream(stream);
-        stream.getTracks().forEach(track => {
-          peerConnection.current.addTrack(track, stream);
+    if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+      setMediaError("Camera and microphone are unavailable in this browser or context.");
+    } else {
+      navigator.mediaDevices
+        .getUserMedia({ video: true, audio: true })
+        .then((stream) => {
+          localVideoRef.current.srcObject = stream;
+          setLocalStream(stream);
+          stream.getTracks().forEach((track) => {
+            peerConnection.current.addTrack(track, stream);
+          });
+        })
+        .catch((error) => {
+          console.error(error);
+          setMediaError("Unable to access camera and microphone.");
         });
-      })
-      .catch(console.error);
+    }
 
     peerConnection.current.onicecandidate = (event) => {
       if (event.candidate) {
@@ -206,6 +215,7 @@ const VideoCall = ({ serverUrlProp }) => {
 
   return (
     <div className="facetime-container">
+    {mediaError ? <p>{mediaError}</p> : null}
     <video className='video-style' ref={remoteVideoRef} autoPlay playsInline></video>
     <video className='local-video-style' ref={localVideoRef} autoPlay playsInline muted></video>
     <div className='buttons-style'>

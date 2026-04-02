@@ -12,7 +12,6 @@ function Signup({ changeToLogin }) {
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    console.log('check mark', event.target.role.checked);
     axios
       .post(`${serverUrl}/api/user/register`, {
         email: event.target.email.value,
