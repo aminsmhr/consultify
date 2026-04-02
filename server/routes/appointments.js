@@ -165,6 +165,7 @@ router.patch("/:appointmentId/socket", authorize, async (req, res) => {
       .update(fieldToUpdate);
 
     if (updatedCount) {
+      await req.app.get("emitAppointmentPresenceById")(appointmentId);
       const appointment = await knex("appointments").where({ id: appointmentId }).first();
 
       if (req.user.type == "0" && appointment.client_socket_id) {

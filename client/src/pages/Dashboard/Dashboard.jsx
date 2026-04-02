@@ -5,6 +5,7 @@ import ConsultantList from "../../components/ConsultantList/ConsultantList";
 import axios from "axios";
 import AppointmentsList from "../../components/AppointmentList/AppointmentsList";
 import { getServerUrl } from "../../lib/serverUrl";
+import io from "socket.io-client";
 
 function Dashboard({ token, handleLogout }) {
   const [profile, setProfile] = useState(null);
@@ -29,7 +30,59 @@ function Dashboard({ token, handleLogout }) {
 
     let isCancelled = false;
 
-    const pollAppointments = async (seedOnly = false) => {
+    const applyAppointmentPresence = (appointment, seedOnly = false) => {
+      const isClient = String(profile.type) === "1";
+      const peerSocketId = isClient
+        ? appointment.consultantSocketId
+        : appointment.clientSocketId;
+      const peerName = isClient
+        ? `${appointment.consultantFirstName} ${appointment.consultantLastName}`
+        : `${appointment.clientFirstName} ${appointment.clientLastName}`;
+      const previous = previousAppointmentState.current[appointment.appointmentId];
+
+      previousAppointmentState.current = {
+        ...previousAppointmentState.current,
+        [appointment.appointmentId]: {
+          peerSocketId,
+          appointmentStatus: appointment.appointmentStatus,
+          peerName,
+        },
+      };
+
+      setActiveJoinStates((current) => {
+        const next = current.filter((notification) => notification.id !== `active-${appointment.appointmentId}`);
+        if (appointment.appointmentStatus === "accepted" && peerSocketId) {
+          next.unshift({
+            id: `active-${appointment.appointmentId}`,
+            message: `${peerName} is in appointment #${appointment.appointmentId} now.`,
+          });
+        }
+        return next.slice(0, 5);
+      });
+
+      const peerJustJoined =
+        !seedOnly &&
+        appointment.appointmentStatus === "accepted" &&
+        peerSocketId &&
+        (!previous || !previous.peerSocketId);
+
+      if (peerJustJoined) {
+        playNotificationSound();
+        setJoinNotifications((current) => {
+          const notification = {
+            id: `${appointment.appointmentId}-${peerSocketId}`,
+            message: `${peerName} joined appointment #${appointment.appointmentId}.`,
+          };
+          const seen = new Set(current.map((item) => item.id));
+          if (seen.has(notification.id)) {
+            return current;
+          }
+          return [notification, ...current].slice(0, 5);
+        });
+      }
+    };
+
+    const seedAppointments = async () => {
       try {
         const { data } = await axios.get(`${serverUrl}/api/appointments/list`, {
           headers: {
@@ -41,73 +94,35 @@ function Dashboard({ token, handleLogout }) {
           return;
         }
 
-        const isClient = String(profile.type) === "1";
-        const nextState = {};
-        const newlyJoined = [];
-        const activeJoins = [];
-
+        const seededState = {};
         data.forEach((appointment) => {
-          const peerSocketId = isClient
-            ? appointment.consultantSocketId
-            : appointment.clientSocketId;
-          const peerName = isClient
-            ? `${appointment.consultantFirstName} ${appointment.consultantLastName}`
-            : `${appointment.clientFirstName} ${appointment.clientLastName}`;
-
-          nextState[appointment.appointmentId] = {
-            peerSocketId,
+          applyAppointmentPresence(appointment, true);
+          const isClient = String(profile.type) === "1";
+          seededState[appointment.appointmentId] = {
+            peerSocketId: isClient ? appointment.consultantSocketId : appointment.clientSocketId,
             appointmentStatus: appointment.appointmentStatus,
-            peerName,
           };
-
-          if (appointment.appointmentStatus === "accepted" && peerSocketId) {
-            activeJoins.push({
-              id: `active-${appointment.appointmentId}`,
-              message: `${peerName} is in appointment #${appointment.appointmentId} now.`,
-            });
-          }
-
-          const previous = previousAppointmentState.current[appointment.appointmentId];
-          const peerJustJoined =
-            !seedOnly &&
-            appointment.appointmentStatus === "accepted" &&
-            peerSocketId &&
-            (!previous || !previous.peerSocketId);
-
-          if (peerJustJoined) {
-            newlyJoined.push({
-              id: `${appointment.appointmentId}-${peerSocketId}`,
-              message: `${peerName} joined appointment #${appointment.appointmentId}.`,
-            });
-          }
         });
-
-        previousAppointmentState.current = nextState;
-        setActiveJoinStates(activeJoins);
-
-        if (newlyJoined.length > 0) {
-          playNotificationSound();
-          setJoinNotifications((current) => {
-            const seen = new Set(current.map((notification) => notification.id));
-            return [
-              ...newlyJoined.filter((notification) => !seen.has(notification.id)),
-              ...current,
-            ].slice(0, 5);
-          });
-        }
+        previousAppointmentState.current = seededState;
       } catch (error) {
         console.error("Error checking joined appointments:", error);
       }
     };
 
-    pollAppointments(true);
-    const intervalId = setInterval(() => {
-      pollAppointments(false);
-    }, 10000);
+    seedAppointments();
+    const dashboardSocket = io(serverUrl, {
+      auth: { token },
+    });
+
+    dashboardSocket.on("appointment:presence", (appointment) => {
+      if (!isCancelled) {
+        applyAppointmentPresence(appointment, false);
+      }
+    });
 
     return () => {
       isCancelled = true;
-      clearInterval(intervalId);
+      dashboardSocket.disconnect();
     };
   }, [profile, serverUrl, token]);
 

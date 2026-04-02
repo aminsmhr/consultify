@@ -7,6 +7,7 @@ const https = require(`https`);
 const swaggerUi = require('swagger-ui-express');
 const swaggerJSDoc = require('swagger-jsdoc');
 const fs = require('fs');
+const jwt = require("jsonwebtoken");
 
 require("dotenv").config({ path: path.join(__dirname, ".env") });
 app.use(express.static(path.join(__dirname, 'build')));
@@ -68,6 +69,35 @@ const io = require("socket.io")(server, {
       }
   });
 
+async function emitAppointmentPresenceById(appointmentId) {
+  const appointment = await knex("appointments")
+    .join("users as consultant", "appointments.consultant_id", "=", "consultant.id")
+    .join("users as client", "appointments.client_id", "=", "client.id")
+    .where({ "appointments.id": appointmentId })
+    .select(
+      "consultant.id as consultantId",
+      "consultant.first_name as consultantFirstName",
+      "consultant.last_name as consultantLastName",
+      "client.id as clientId",
+      "client.first_name as clientFirstName",
+      "client.last_name as clientLastName",
+      "appointments.id as appointmentId",
+      "appointments.status as appointmentStatus",
+      "appointments.client_socket_id as clientSocketId",
+      "appointments.consultant_socket_id as consultantSocketId"
+    )
+    .first();
+
+  if (!appointment) {
+    return;
+  }
+
+  io.to(`user:${appointment.clientId}`).emit("appointment:presence", appointment);
+  io.to(`user:${appointment.consultantId}`).emit("appointment:presence", appointment);
+}
+
+app.set("emitAppointmentPresenceById", emitAppointmentPresenceById);
+
 // Routes
 app.use("/api/user", userRoutes);
 app.use('/api/appointments', appointmentRoutes);
@@ -80,6 +110,16 @@ app.get('*', (req, res) => {
 
 io.on('connection', (socket)=>{
   connectedPeers.push(socket.id);
+  const token = socket.handshake.auth?.token;
+  if (token) {
+    try {
+      const payload = jwt.verify(token, process.env.JWT_SECRET);
+      socket.join(`user:${payload.id}`);
+    } catch (error) {
+      console.error("Invalid socket auth token:", error.message);
+    }
+  }
+
 socket.emit("me", socket.id)
 
   socket.on('offer', ({offer,socketId})=>{
@@ -100,6 +140,11 @@ socket.emit("me", socket.id)
      connectedPeers = newConnectedPeers;
 
      try {
+      const affectedAppointments = await knex("appointments")
+        .where({ client_socket_id: socket.id })
+        .orWhere({ consultant_socket_id: socket.id })
+        .select("id");
+
       await knex("appointments")
         .where({ client_socket_id: socket.id })
         .update({ client_socket_id: null });
@@ -107,6 +152,10 @@ socket.emit("me", socket.id)
       await knex("appointments")
         .where({ consultant_socket_id: socket.id })
         .update({ consultant_socket_id: null });
+
+      await Promise.all(
+        affectedAppointments.map((appointment) => emitAppointmentPresenceById(appointment.id))
+      );
      } catch (error) {
       console.error("Failed to clear disconnected socket from appointments:", error);
      }
