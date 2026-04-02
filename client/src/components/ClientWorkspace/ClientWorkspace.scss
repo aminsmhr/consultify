@@ -257,13 +257,18 @@
   list-style: none;
 }
 
-.client-workspace__attachments a,
+.client-workspace__attachments button,
 .client-workspace__file-list li {
   padding: 0.45rem 0.7rem;
   border-radius: 999px;
   background: rgba(111, 70, 48, 0.08);
   color: $eco-color;
   text-decoration: none;
+}
+
+.client-workspace__attachments button {
+  border: none;
+  cursor: pointer;
 }
 
 .client-workspace__composer,

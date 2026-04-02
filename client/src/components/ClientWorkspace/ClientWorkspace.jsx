@@ -138,6 +138,30 @@ function ClientWorkspace({ token, profile, mode = "messages" }) {
     }
   };
 
+  const handleDownloadAttachment = async (attachment) => {
+    try {
+      const response = await axios.get(
+        `${serverUrl}/api/client-workspace/attachments/${attachment.id}`,
+        {
+          ...authConfig,
+          responseType: "blob",
+        }
+      );
+
+      const objectUrl = window.URL.createObjectURL(new Blob([response.data]));
+      const link = document.createElement("a");
+      link.href = objectUrl;
+      link.download = attachment.originalName;
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      window.URL.revokeObjectURL(objectUrl);
+    } catch (downloadError) {
+      console.error(downloadError);
+      setError("Failed to download attachment.");
+    }
+  };
+
   const handleSaveNote = async () => {
     if (!selectedContactId || !isConsultant) {
       return;
@@ -288,14 +312,13 @@ function ClientWorkspace({ token, profile, mode = "messages" }) {
                           {message.attachments?.length ? (
                             <div className="client-workspace__attachments">
                               {message.attachments.map((attachment) => (
-                                <a
+                                <button
                                   key={attachment.id}
-                                  href={`${serverUrl}/api/client-workspace/attachments/${attachment.id}`}
-                                  target="_blank"
-                                  rel="noreferrer"
+                                  type="button"
+                                  onClick={() => handleDownloadAttachment(attachment)}
                                 >
                                   {attachment.originalName}
-                                </a>
+                                </button>
                               ))}
                             </div>
                           ) : null}
