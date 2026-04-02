@@ -42,6 +42,7 @@
 }
 
 .client-workspace__refresh,
+.client-workspace__back,
 .client-workspace__section-title button,
 .client-workspace__composer button {
   border: none;
@@ -51,6 +52,12 @@
   color: $text-color-light;
   font-weight: 800;
   cursor: pointer;
+}
+
+.client-workspace__back {
+  padding: 0.65rem 0.95rem;
+  background: rgba(111, 70, 48, 0.12);
+  color: $eco-color;
 }
 
 .client-workspace__layout {
@@ -126,6 +133,11 @@
   gap: 1rem;
 }
 
+.client-workspace__sidebar--hidden,
+.client-workspace__main--hidden {
+  display: none;
+}
+
 .client-workspace__client-card {
   display: flex;
   flex-direction: column;
@@ -178,6 +190,7 @@
 
 .client-workspace__thread-header {
   padding: 0 0.25rem;
+  flex-wrap: wrap;
 
   h3 {
     margin: 0;
@@ -349,8 +362,39 @@
 }
 
 @media (max-width: 900px) {
+  .client-workspace {
+    padding: 1.2rem;
+  }
+
+  .client-workspace__header {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .client-workspace__refresh {
+    width: 100%;
+    justify-content: center;
+  }
+
   .client-workspace__layout {
     grid-template-columns: 1fr;
+  }
+
+  .client-workspace__sidebar,
+  .client-workspace__main {
+    min-width: 0;
+  }
+
+  .client-workspace__thread-header {
+    align-items: stretch;
+  }
+
+  .client-workspace__back {
+    width: fit-content;
+  }
+
+  .client-workspace__message {
+    max-width: 100%;
   }
 }
 

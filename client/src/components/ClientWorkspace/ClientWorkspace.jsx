@@ -15,6 +15,10 @@ function ClientWorkspace({ token, profile, mode = "messages" }) {
   const [composer, setComposer] = useState({ subject: "", body: "", files: [] });
   const [noteText, setNoteText] = useState("");
   const [error, setError] = useState("");
+  const [isMobileView, setIsMobileView] = useState(() =>
+    typeof window !== "undefined" ? window.innerWidth <= 900 : false
+  );
+  const [showMobileDetail, setShowMobileDetail] = useState(false);
 
   const authConfig = useMemo(
     () => ({
@@ -88,10 +92,44 @@ function ClientWorkspace({ token, profile, mode = "messages" }) {
   }, []);
 
   useEffect(() => {
+    if (typeof window === "undefined") {
+      return undefined;
+    }
+
+    const mediaQuery = window.matchMedia("(max-width: 900px)");
+    const handleChange = (event) => {
+      setIsMobileView(event.matches);
+      if (!event.matches) {
+        setShowMobileDetail(false);
+      }
+    };
+
+    setIsMobileView(mediaQuery.matches);
+
+    if (mediaQuery.addEventListener) {
+      mediaQuery.addEventListener("change", handleChange);
+      return () => mediaQuery.removeEventListener("change", handleChange);
+    }
+
+    mediaQuery.addListener(handleChange);
+    return () => mediaQuery.removeListener(handleChange);
+  }, []);
+
+  useEffect(() => {
     fetchConversation(selectedContactId);
   }, [selectedContactId]);
 
+  useEffect(() => {
+    if (!isMobileView || !selectedContactId) {
+      return;
+    }
+
+    setShowMobileDetail(true);
+  }, [isMobileView, selectedContactId]);
+
   const selectedContact = contacts.find((contact) => contact.id === selectedContactId) || null;
+  const shouldShowSidebar = !isMobileView || !showMobileDetail;
+  const shouldShowMain = !isMobileView || showMobileDetail;
 
   const handleFileChange = (event) => {
     setComposer((current) => ({
@@ -184,6 +222,13 @@ function ClientWorkspace({ token, profile, mode = "messages" }) {
     }
   };
 
+  const handleSelectContact = (contactId) => {
+    setSelectedContactId(contactId);
+    if (isMobileView) {
+      setShowMobileDetail(true);
+    }
+  };
+
   return (
     <section className="client-workspace">
       <div className="client-workspace__header">
@@ -200,7 +245,9 @@ function ClientWorkspace({ token, profile, mode = "messages" }) {
       </div>
 
       <div className="client-workspace__layout">
-        <aside className="client-workspace__sidebar">
+        <aside
+          className={`client-workspace__sidebar ${!shouldShowSidebar ? "client-workspace__sidebar--hidden" : ""}`}
+        >
           <h3>{isConsultant ? "Clients" : "Consultants"}</h3>
           {isLoadingContacts ? (
             <div className="client-workspace__loading-stack">
@@ -214,7 +261,7 @@ function ClientWorkspace({ token, profile, mode = "messages" }) {
                 <button
                   key={contact.id}
                   className={`client-workspace__contact ${selectedContactId === contact.id ? "client-workspace__contact--active" : ""}`}
-                  onClick={() => setSelectedContactId(contact.id)}
+                  onClick={() => handleSelectContact(contact.id)}
                 >
                   <strong>{contact.first_name} {contact.last_name}</strong>
                   <span>{contact.email}</span>
@@ -242,10 +289,21 @@ function ClientWorkspace({ token, profile, mode = "messages" }) {
           )}
         </aside>
 
-        <div className="client-workspace__main">
+        <div
+          className={`client-workspace__main ${!shouldShowMain ? "client-workspace__main--hidden" : ""}`}
+        >
           {selectedContact && conversation ? (
             <>
               <div className="client-workspace__thread-header">
+                {isMobileView ? (
+                  <button
+                    type="button"
+                    className="client-workspace__back"
+                    onClick={() => setShowMobileDetail(false)}
+                  >
+                    Back to {isConsultant ? "clients" : "consultants"}
+                  </button>
+                ) : null}
                 <div>
                   <h3>{selectedContact.first_name} {selectedContact.last_name}</h3>
                   <p>{selectedContact.email}</p>
