@@ -8,10 +8,10 @@
   display: flex;
   flex-direction: column;
   gap: 1rem;
-  border-right: 1px solid rgba(219, 228, 238, 0.8);
-  background:
-    linear-gradient(180deg, rgba(247, 250, 252, 0.96), rgba(241, 245, 249, 0.92)),
-    $surface-secondary;
+  margin: 1rem 0 1rem 1rem;
+  border: 1px solid $border-color;
+  border-radius: $radius-xl;
+  background: $surface-secondary;
 }
 
 .workspace-nav__brand {
@@ -43,11 +43,10 @@
   display: grid;
   place-items: center;
   border-radius: 0.9rem;
-  background: linear-gradient(135deg, $primary-color, #52a0f3);
+  background: $primary-color;
   color: $text-color-light;
   font-size: 1.1rem;
   font-weight: 700;
-  box-shadow: 0 12px 24px rgba(15, 108, 189, 0.22);
 }
 
 .workspace-nav__search input {
@@ -114,11 +113,8 @@
 .workspace-nav__promo {
   padding: 1rem;
   border-radius: $radius-lg;
-  background:
-    radial-gradient(circle at top right, rgba(14, 165, 233, 0.16), transparent 9rem),
-    linear-gradient(180deg, #ffffff, #f7fbff);
+  background: $surface-primary;
   border: 1px solid rgba(15, 108, 189, 0.12);
-  box-shadow: $shadow-sm;
 
   strong {
     display: block;
@@ -146,7 +142,7 @@
   padding: 0.65rem;
   border: 1px solid $border-color;
   border-radius: $radius-lg;
-  background: rgba(255, 255, 255, 0.9);
+  background: $surface-primary;
   cursor: pointer;
 }
 
@@ -203,8 +199,7 @@
   padding: 0.45rem;
   border: 1px solid $border-color;
   border-radius: $radius-md;
-  background: rgba(255, 255, 255, 0.98);
-  box-shadow: $shadow-md;
+  background: $surface-primary;
 }
 
 .workspace-nav__menu-link {
@@ -231,7 +226,6 @@
   .workspace-nav {
     position: static;
     min-height: auto;
-    border-right: none;
-    border-bottom: 1px solid rgba(219, 228, 238, 0.8);
+    margin: 0.75rem 0.75rem 0;
   }
 }
