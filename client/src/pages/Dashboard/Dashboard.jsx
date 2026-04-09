@@ -228,18 +228,67 @@ function Dashboard({ token, profile }) {
     );
   }
 
+  const summaryItems =
+    String(profile.type) === "0"
+      ? [
+          {
+            label: "Workspace mode",
+            value: "Consultant",
+            detail: "Manage client activity and live meetings",
+          },
+          {
+            label: "Live presence",
+            value: `${activeJoinStates.length}`,
+            detail: "Participants currently available to join",
+          },
+          {
+            label: "New notifications",
+            value: `${joinNotifications.length}`,
+            detail: "Recent appointment join events",
+          },
+        ]
+      : [
+          {
+            label: "Workspace mode",
+            value: "Client",
+            detail: "Browse consultants and schedule sessions",
+          },
+          {
+            label: "Consultants",
+            value: `${consultants.length}`,
+            detail: "Available advisors in your workspace",
+          },
+          {
+            label: "New notifications",
+            value: `${joinNotifications.length}`,
+            detail: "Recent appointment join events",
+          },
+        ];
+
   return (
     <main className="dashboard">
       <section className="dashboard__hero">
-        <p className="dashboard__eyebrow">Workspace overview</p>
-        <h1 className="dashboard__title">
-          {profile?.type === 1 ? "Plan your next appointment" : "Manage your live sessions"}
-        </h1>
-        <p className="dashboard__subtitle">
-          {profile?.type === 1
-            ? "Browse consultants, lock in a time, and jump into sessions from one calm workspace."
-            : "Review appointment requests, stay on top of joins in real time, and keep every session moving."}
-        </p>
+        <div>
+          <p className="dashboard__eyebrow">Workspace overview</p>
+          <h1 className="dashboard__title">
+            {profile?.type === 1 ? "Plan your next appointment" : "Manage your live sessions"}
+          </h1>
+          <p className="dashboard__subtitle">
+            {profile?.type === 1
+              ? "Browse consultants, lock in a time, and move from planning to live sessions in one organized workspace."
+              : "Review requests, track participant presence in real time, and keep every client session moving from a structured command view."}
+          </p>
+        </div>
+
+        <div className="dashboard__summary-grid">
+          {summaryItems.map((item) => (
+            <article key={item.label} className="dashboard__summary-card">
+              <span>{item.label}</span>
+              <strong>{item.value}</strong>
+              <small>{item.detail}</small>
+            </article>
+          ))}
+        </div>
       </section>
       <div className="dashboard__toast-stack">
         {activeJoinStates.map((notification) => (

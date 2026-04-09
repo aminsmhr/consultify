@@ -47,15 +47,15 @@ function Login({ handleLogin }) {
             <section className="login-page__panel">
                 <div className="login-page__intro">
                     <span className="login-page__eyebrow">Consultify platform</span>
-                    <h1>Advisory sessions with a sharper interface.</h1>
+                    <h1>Advisory sessions in a SharePoint-style workspace.</h1>
                     <p>
-                        Manage bookings, jump into calls, and keep both consultants and clients in sync
-                        from one polished workspace.
+                        Manage bookings, shared communications, and live meetings from a cleaner
+                        enterprise hub built around structure instead of decoration.
                     </p>
                 </div>
                 <form className="login" onSubmit={handleSubmit}>
                     <h2 className="login__title">Welcome back</h2>
-                    <p className="login__subtitle">Sign in to review your upcoming sessions.</p>
+                    <p className="login__subtitle">Sign in to open your dashboard, appointments, and collaboration tools.</p>
 
                     <Input name="email" label="Email" />
                     <Input type="password" name="password" label="Password" />

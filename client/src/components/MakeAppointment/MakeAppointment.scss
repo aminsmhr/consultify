@@ -1,342 +1,303 @@
-@import '../../Style/variables';
+@import "../../Style/variables";
 
 .make-appointment {
   width: 100%;
-  max-width: 1280px;
   margin: 0 0 1rem;
-  padding: 1.35rem;
-  border: 1px solid rgba(255, 255, 255, 0.42);
-  border-radius: 1.2rem;
-  background: $surface-primary;
-  backdrop-filter: blur(18px);
+  padding: 1.4rem;
+  border: 1px solid rgba(255, 255, 255, 0.75);
+  border-radius: $radius-xl;
+  background: rgba(255, 255, 255, 0.94);
   box-shadow: $shadow-md;
+}
 
-  &__header {
-    margin-bottom: 1rem;
-  }
+.make-appointment__header {
+  margin-bottom: 1rem;
+}
 
-  &__eyebrow {
-    margin: 0 0 0.45rem;
-    font-size: 0.72rem;
-    letter-spacing: 0.14em;
-    text-transform: uppercase;
-    color: rgba(76, 51, 38, 0.6);
-  }
+.make-appointment__eyebrow {
+  margin: 0 0 0.45rem;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: $primary-color;
+}
 
-  &__title {
-    margin: 0;
-    font-family: $font-stack;
-    font-size: clamp(1.3rem, 1.9vw, 1.95rem);
-    color: $text-color;
-  }
+.make-appointment__title {
+  margin: 0;
+  font-size: clamp(1.35rem, 1.9vw, 2rem);
+  letter-spacing: -0.03em;
+  color: $text-color;
+}
 
-  &__subtitle {
-    margin: 0.55rem 0 0;
-    max-width: 50rem;
-    color: $muted-text;
-    font-size: 0.94rem;
-  }
+.make-appointment__subtitle {
+  margin: 0.55rem 0 0;
+  max-width: 50rem;
+  color: $muted-text;
+  font-size: 0.95rem;
+}
 
-  &__layout {
-    display: grid;
-    grid-template-columns: minmax(0, 1.5fr) minmax(320px, 0.95fr);
-    gap: 1rem;
-    align-items: start;
-  }
+.make-appointment__layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1.5fr) minmax(320px, 0.95fr);
+  gap: 1rem;
+  align-items: start;
+}
 
-  &__consultants {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-    gap: 0.9rem;
-  }
+.make-appointment__consultants {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 0.9rem;
+}
 
-  &__consultant-card {
-    display: flex;
-    flex-direction: column;
-    gap: 0.9rem;
-    padding: 1rem;
-    border: 1px solid rgba(76, 51, 38, 0.08);
-    border-radius: 1rem;
-    background: rgba(255, 255, 255, 0.88);
-    text-align: left;
-    cursor: pointer;
-    transition: transform 160ms ease, box-shadow 160ms ease, border-color 160ms ease;
+.make-appointment__consultant-card {
+  display: flex;
+  flex-direction: column;
+  gap: 0.9rem;
+  padding: 1rem;
+  border: 1px solid $border-color;
+  border-radius: $radius-lg;
+  background: linear-gradient(180deg, #ffffff, #f8fafc);
+  text-align: left;
+  cursor: pointer;
+  transition: transform 160ms ease, box-shadow 160ms ease, border-color 160ms ease;
+}
 
-    &:hover {
-      transform: translateY(-1px);
-      box-shadow: 0 14px 28px rgba(77, 48, 34, 0.08);
-    }
-  }
+.make-appointment__consultant-card:hover {
+  transform: translateY(-1px);
+  box-shadow: $shadow-sm;
+}
 
-  &__consultant-card--active {
-    border-color: rgba(111, 70, 48, 0.26);
-    box-shadow: 0 16px 30px rgba(77, 48, 34, 0.12);
-    background: rgba(255, 251, 247, 0.96);
-  }
+.make-appointment__consultant-card--active {
+  border-color: rgba(15, 108, 189, 0.24);
+  box-shadow: 0 16px 30px rgba(15, 108, 189, 0.1);
+  background: linear-gradient(180deg, #ffffff, #f2f8fe);
+}
 
-  &__consultant-top {
-    display: flex;
-    align-items: center;
-    gap: 0.8rem;
+.make-appointment__consultant-top {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+}
 
-    h3 {
-      margin: 0;
-      font-size: 1rem;
-      color: $text-color;
-    }
+.make-appointment__consultant-top h3 {
+  margin: 0;
+  font-size: 1rem;
+  color: $text-color;
+}
 
-    p {
-      margin: 0.2rem 0 0;
-      color: $muted-text;
-      font-size: 0.85rem;
-    }
-  }
+.make-appointment__consultant-top p {
+  margin: 0.2rem 0 0;
+  color: $muted-text;
+  font-size: 0.85rem;
+}
 
-  &__avatar {
-    width: 2.7rem;
-    height: 2.7rem;
-    display: grid;
-    place-items: center;
-    border-radius: 50%;
-    background: linear-gradient(135deg, rgba(139, 90, 60, 0.16), rgba(77, 48, 34, 0.22));
-    color: $eco-color2;
-    font-weight: 800;
-  }
+.make-appointment__avatar {
+  width: 2.8rem;
+  height: 2.8rem;
+  display: grid;
+  place-items: center;
+  border-radius: 0.95rem;
+  background: rgba(15, 108, 189, 0.12);
+  color: $primary-color-dark;
+  font-weight: 700;
+}
 
-  &__consultant-meta {
-    display: flex;
-    flex-direction: column;
-    gap: 0.35rem;
+.make-appointment__consultant-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
 
-    span,
-    small {
-      color: $muted-text;
-      line-height: 1.45;
-    }
-  }
+.make-appointment__consultant-meta span,
+.make-appointment__consultant-meta small {
+  color: $muted-text;
+  line-height: 1.45;
+}
 
-  &__scheduler {
-    display: flex;
-    flex-direction: column;
-    gap: 0.95rem;
-    padding: 1rem;
-    border-radius: 1rem;
-    background: rgba(255, 255, 255, 0.72);
-    border: 1px solid rgba(255, 255, 255, 0.5);
-    position: sticky;
-    top: 1rem;
-  }
+.make-appointment__scheduler {
+  display: flex;
+  flex-direction: column;
+  gap: 0.95rem;
+  padding: 1rem;
+  border-radius: $radius-lg;
+  background: $surface-secondary;
+  border: 1px solid $border-color;
+  position: sticky;
+  top: 1rem;
+}
 
-  &--loading {
-    .make-appointment__header {
-      display: grid;
-      gap: 0.55rem;
-    }
-  }
+.make-appointment--loading .make-appointment__header {
+  display: grid;
+  gap: 0.55rem;
+}
 
-  &__loading-grid {
-    display: grid;
-    grid-template-columns: minmax(0, 1.5fr) minmax(320px, 0.95fr);
-    gap: 1rem;
-  }
+.make-appointment__loading-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.5fr) minmax(320px, 0.95fr);
+  gap: 1rem;
+}
 
-  &__skeleton {
-    border-radius: 1rem;
-    background: linear-gradient(
-      90deg,
-      rgba(111, 70, 48, 0.12),
-      rgba(255, 244, 231, 0.78),
-      rgba(111, 70, 48, 0.12)
-    );
-    background-size: 200% 100%;
-    animation: make-appointment-skeleton 1.35s ease-in-out infinite;
-  }
+.make-appointment__skeleton {
+  border-radius: 1rem;
+  background: linear-gradient(
+    90deg,
+    rgba(203, 213, 225, 0.42),
+    rgba(255, 255, 255, 0.95),
+    rgba(203, 213, 225, 0.42)
+  );
+  background-size: 200% 100%;
+  animation: make-appointment-skeleton 1.35s ease-in-out infinite;
+}
 
-  &__skeleton--eyebrow {
-    width: 8rem;
-    height: 0.8rem;
-    border-radius: 999px;
-  }
+.make-appointment__skeleton--eyebrow {
+  width: 8rem;
+  height: 0.8rem;
+  border-radius: 999px;
+}
 
-  &__skeleton--title {
-    width: min(24rem, 70%);
-    height: 2rem;
-    border-radius: 999px;
-  }
+.make-appointment__skeleton--title {
+  width: min(24rem, 70%);
+  height: 2rem;
+  border-radius: 999px;
+}
 
-  &__skeleton--consultant {
-    min-height: 8rem;
-  }
+.make-appointment__skeleton--consultant {
+  min-height: 8rem;
+}
 
-  &__skeleton--scheduler {
-    min-height: 18rem;
-  }
+.make-appointment__skeleton--scheduler {
+  min-height: 18rem;
+}
 
-  &__scheduler-head {
-    h3 {
-      margin: 0.18rem 0 0;
-      font-family: $font-stack;
-      font-size: 1.2rem;
-      color: $text-color;
-    }
+.make-appointment__scheduler-head h3 {
+  margin: 0.18rem 0 0;
+  font-size: 1.25rem;
+  color: $text-color;
+}
 
-    span,
-    p {
-      margin: 0;
-      color: $muted-text;
-    }
-  }
+.make-appointment__scheduler-head span,
+.make-appointment__scheduler-head p {
+  margin: 0;
+  color: $muted-text;
+}
 
-  &__scheduler-label,
-  &__field span,
-  &__time-copy span,
-  &__summary span {
-    display: block;
-    margin-bottom: 0.38rem;
-    font-size: 0.76rem;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    color: rgba(76, 51, 38, 0.58);
-  }
+.make-appointment__scheduler-label,
+.make-appointment__field span,
+.make-appointment__time-copy span,
+.make-appointment__summary span {
+  display: block;
+  margin-bottom: 0.38rem;
+  font-size: 0.74rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: $muted-text-soft;
+}
 
-  &__field {
-    display: flex;
-    flex-direction: column;
-  }
+.make-appointment__field {
+  display: flex;
+  flex-direction: column;
+}
 
-  &__input {
-    width: 100%;
-    padding: 0.9rem 1rem;
-    border: 1px solid rgba(16, 32, 51, 0.12);
-    border-radius: 0.95rem;
-    background: rgba(255, 255, 255, 0.9);
-    color: $text-color;
+.make-appointment__input {
+  width: 100%;
+  padding: 0.9rem 1rem;
+  border: 1px solid $border-color;
+  border-radius: 0.95rem;
+  background: $surface-primary;
+  color: $text-color;
+}
 
-    &:focus {
-      outline: none;
-      border-color: rgba(139, 90, 60, 0.55);
-      box-shadow: 0 0 0 4px rgba(139, 90, 60, 0.12);
-    }
-  }
+.make-appointment__input:focus {
+  outline: none;
+  border-color: rgba(15, 108, 189, 0.55);
+  box-shadow: 0 0 0 4px rgba(15, 108, 189, 0.12);
+}
 
-  &__time-picker {
-    display: flex;
-    flex-direction: column;
-    gap: 0.7rem;
-  }
+.make-appointment__time-picker {
+  display: flex;
+  flex-direction: column;
+  gap: 0.7rem;
+}
 
-  &__time-copy strong,
-  &__summary strong {
-    color: $text-color;
-    line-height: 1.5;
-  }
+.make-appointment__time-copy strong,
+.make-appointment__summary strong {
+  color: $text-color;
+  line-height: 1.5;
+}
 
-  &__time-grid {
-    display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 0.55rem;
-  }
+.make-appointment__time-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.55rem;
+}
 
-  &__time-slot {
-    border: 1px solid rgba(111, 70, 48, 0.12);
-    border-radius: 999px;
-    padding: 0.75rem 0.85rem;
-    background: rgba(255, 255, 255, 0.92);
-    color: $text-color;
-    cursor: pointer;
-    font-weight: 700;
-  }
+.make-appointment__time-slot {
+  border: 1px solid $border-color;
+  border-radius: 999px;
+  padding: 0.75rem 0.85rem;
+  background: $surface-primary;
+  color: $text-color;
+  cursor: pointer;
+  font-weight: 700;
+}
 
-  &__time-slot--active {
-    background: linear-gradient(135deg, $eco-color1, $eco-color2);
-    color: $text-color-light;
-    box-shadow: 0 12px 24px rgba(77, 48, 34, 0.16);
-  }
+.make-appointment__time-slot--active {
+  background: linear-gradient(135deg, $primary-color, #2080cd);
+  color: $text-color-light;
+  box-shadow: 0 12px 24px rgba(15, 108, 189, 0.16);
+}
 
-  &__summary {
-    padding: 0.95rem 1rem;
-    border-radius: 1rem;
-    background: rgba(111, 70, 48, 0.08);
-  }
+.make-appointment__summary {
+  padding: 0.95rem 1rem;
+  border-radius: 1rem;
+  background: rgba(15, 108, 189, 0.06);
+  border: 1px solid rgba(15, 108, 189, 0.08);
+}
 
-  &__message {
-    margin: 0;
-    color: $muted-text;
-  }
+.make-appointment__message {
+  margin: 0;
+  color: $muted-text;
+}
 
-  &__button {
-    padding: 0.95rem 1.1rem;
-    background: linear-gradient(135deg, $eco-color1, $eco-color2);
-    color: $text-color-light;
-    border: none;
-    border-radius: 999px;
-    cursor: pointer;
-    font-weight: 800;
-    box-shadow: 0 14px 30px rgba(77, 48, 34, 0.18);
-    transition: transform 0.15s ease, box-shadow 0.15s ease;
-
-    &:hover {
-      transform: translateY(-1px);
-      box-shadow: 0 18px 34px rgba(77, 48, 34, 0.24);
-    }
-  }
+.make-appointment__button {
+  padding: 0.95rem 1.1rem;
+  background: linear-gradient(135deg, $primary-color, #2080cd);
+  color: $text-color-light;
+  border: none;
+  border-radius: 999px;
+  cursor: pointer;
+  font-weight: 700;
+  box-shadow: 0 14px 30px rgba(15, 108, 189, 0.18);
 }
 
 @media (max-width: 1080px) {
-  .make-appointment {
-    &__layout {
-      grid-template-columns: 1fr;
-    }
+  .make-appointment__layout,
+  .make-appointment__loading-grid {
+    grid-template-columns: 1fr;
+  }
 
-    &__scheduler {
-      position: static;
-    }
-
-    &__loading-grid {
-      grid-template-columns: 1fr;
-    }
+  .make-appointment__scheduler {
+    position: static;
   }
 }
 
 @media (max-width: 768px) {
   .make-appointment {
     padding: 1rem;
+  }
 
-    &__consultants {
-      grid-template-columns: 1fr;
-    }
+  .make-appointment__consultants {
+    grid-template-columns: 1fr;
+  }
 
-    &__time-grid {
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-    }
+  .make-appointment__time-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
 
-    &__scheduler {
-      padding: 0.9rem;
-    }
-
-    &__scheduler-head {
-      text-align: left;
-    }
-
-    &__time-grid {
-      grid-template-columns: 1fr 1fr;
-    }
-
-    &__loading-grid {
-      grid-template-columns: 1fr;
-    }
-
-    &__field,
-    &__time-picker,
-    &__summary {
-      width: 100%;
-    }
-
-    &__input,
-    &__time-slot,
-    &__button {
-      min-height: 3rem;
-    }
+  .make-appointment__scheduler {
+    padding: 0.9rem;
   }
 }
 

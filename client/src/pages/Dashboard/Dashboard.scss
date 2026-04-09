@@ -1,196 +1,232 @@
-@import '../../Style/variables';
+@import "../../Style/variables";
 
 .dashboard {
-  width: min(1280px, calc(100% - 2rem));
-  margin: 0 auto;
-  padding: 1.1rem 0 2.2rem;
+  width: 100%;
   display: flex;
   flex-direction: column;
-  align-items: center;
+  gap: 1rem;
+}
 
-  &__hero {
-    width: 100%;
-    max-width: 1280px;
-    margin-bottom: 0.9rem;
-    padding: 1.35rem 1.45rem;
-    border-radius: 1.2rem;
-    background:
-      radial-gradient(circle at top right, rgba(248, 220, 188, 0.18), transparent 22rem),
-      linear-gradient(135deg, rgba(58, 35, 24, 0.96), rgba(111, 70, 48, 0.92));
-    color: $text-color-light;
-    box-shadow: $shadow-lg;
-  }
+.dashboard__hero {
+  width: 100%;
+  padding: 1.4rem 1.5rem;
+  border-radius: $radius-xl;
+  background:
+    radial-gradient(circle at top right, rgba(15, 108, 189, 0.14), transparent 18rem),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.96), rgba(248, 250, 252, 0.98));
+  border: 1px solid rgba(255, 255, 255, 0.8);
+  box-shadow: $shadow-md;
+}
 
-  &__hero--loading {
-    display: flex;
-    flex-direction: column;
-    gap: 0.7rem;
-  }
+.dashboard__hero--loading {
+  display: flex;
+  flex-direction: column;
+  gap: 0.7rem;
+}
 
-  &__eyebrow {
-    margin: 0 0 0.55rem;
-    font-size: 0.72rem;
-    letter-spacing: 0.14em;
-    text-transform: uppercase;
-    color: rgba(255, 253, 248, 0.68);
-  }
+.dashboard__eyebrow {
+  margin: 0 0 0.5rem;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: $primary-color;
+}
 
-  &__title {
-    margin: 0;
-    color: #fff8f1;
-    font-family: $font-stack;
-    font-size: clamp(1.55rem, 2.4vw, 2.4rem);
-    line-height: 1;
-  }
+.dashboard__title {
+  margin: 0;
+  font-size: clamp(1.6rem, 2.3vw, 2.6rem);
+  line-height: 1;
+  letter-spacing: -0.03em;
+  color: $text-color;
+}
 
-  &__subtitle {
-    margin: 0.65rem 0 0;
-    max-width: 52rem;
-    font-size: 0.95rem;
-    color: rgba(255, 253, 248, 0.82);
-  }
+.dashboard__subtitle {
+  margin: 0.7rem 0 0;
+  max-width: 54rem;
+  color: $muted-text;
+}
 
-  &__toast-stack {
-    position: fixed;
-    top: 1.25rem;
-    right: 1rem;
-    z-index: 1000;
-    display: flex;
-    flex-direction: column;
-    gap: 0.75rem;
-    width: min(22rem, calc(100vw - 2rem));
-  }
+.dashboard__summary-grid {
+  margin-top: 1.25rem;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.9rem;
+}
 
-  &__toast {
-    padding: 1rem 1.25rem;
-    border-radius: 1rem;
-    color: #fff;
-    box-shadow: 0 0.75rem 1.5rem rgba(0, 0, 0, 0.18);
-    backdrop-filter: blur(14px);
+.dashboard__summary-card {
+  padding: 1rem;
+  border-radius: $radius-lg;
+  background: rgba(255, 255, 255, 0.92);
+  border: 1px solid $border-color;
+}
 
-    p {
-      margin: 0;
-      line-height: 1.4;
-    }
-  }
+.dashboard__summary-card span,
+.dashboard__summary-card strong,
+.dashboard__summary-card small {
+  display: block;
+}
 
-  &__toast--active {
-    background: #7c5138;
-  }
+.dashboard__summary-card span {
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: $muted-text-soft;
+}
 
-  &__toast--new {
-    background: #1a7f37;
-    animation: toast-in 180ms ease-out;
-  }
+.dashboard__summary-card strong {
+  margin-top: 0.55rem;
+  font-size: 1.7rem;
+  color: $text-color;
+}
 
-  &__tabs {
-    width: 100%;
-    max-width: 1280px;
-    display: flex;
-    flex-direction: column;
-    gap: 0.8rem;
-  }
+.dashboard__summary-card small {
+  margin-top: 0.45rem;
+  color: $muted-text;
+  line-height: 1.5;
+}
 
-  &__tab-list {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.6rem;
-  }
+.dashboard__toast-stack {
+  position: fixed;
+  top: 1rem;
+  right: 1rem;
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  width: min(22rem, calc(100vw - 2rem));
+}
 
-  &__tab {
-    border: none;
-    border-radius: 999px;
-    padding: 0.7rem 0.95rem;
-    background: rgba(111, 70, 48, 0.08);
-    color: $text-color;
-    font-size: 0.92rem;
-    font-weight: 800;
-    cursor: pointer;
-    transition: transform 160ms ease, background-color 160ms ease, color 160ms ease;
+.dashboard__toast {
+  padding: 1rem 1.15rem;
+  border-radius: $radius-md;
+  border: 1px solid rgba(255, 255, 255, 0.75);
+  box-shadow: $shadow-md;
+  backdrop-filter: blur(14px);
+}
 
-    &:hover {
-      transform: translateY(-1px);
-      background: rgba(111, 70, 48, 0.14);
-    }
-  }
+.dashboard__toast p {
+  margin: 0;
+  line-height: 1.4;
+}
 
-  &__tab--placeholder {
-    min-width: 6.5rem;
-    min-height: 2.6rem;
-    pointer-events: none;
-  }
+.dashboard__toast--active {
+  background: rgba(220, 238, 255, 0.96);
+  color: $primary-color-dark;
+}
 
-  &__tab--active {
-    background: linear-gradient(135deg, $eco-color1, $eco-color2);
-    color: $text-color-light;
-    box-shadow: 0 14px 28px rgba(77, 48, 34, 0.18);
-  }
+.dashboard__toast--new {
+  background: rgba(236, 253, 243, 0.96);
+  color: $success-color;
+  animation: toast-in 180ms ease-out;
+}
 
-  &__tab-panel {
-    display: flex;
-    flex-direction: column;
-    gap: 0.9rem;
-  }
+.dashboard__tabs {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 0.9rem;
+}
 
-  &__loading-panel {
-    display: grid;
-    gap: 0.9rem;
-  }
+.dashboard__tab-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.65rem;
+  padding: 0.45rem;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.78);
+  border: 1px solid rgba(255, 255, 255, 0.75);
+  box-shadow: $shadow-sm;
+  width: fit-content;
+}
 
-  &__skeleton {
-    border-radius: 999px;
-    background: linear-gradient(
-      90deg,
-      rgba(111, 70, 48, 0.12),
-      rgba(255, 244, 231, 0.78),
-      rgba(111, 70, 48, 0.12)
-    );
-    background-size: 200% 100%;
-    animation: dashboard-skeleton 1.35s ease-in-out infinite;
-  }
+.dashboard__tab {
+  border: none;
+  border-radius: 999px;
+  padding: 0.78rem 1.1rem;
+  background: transparent;
+  color: $muted-text;
+  font-size: 0.94rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background-color 160ms ease, color 160ms ease, box-shadow 160ms ease;
+}
 
-  &__skeleton--eyebrow {
-    width: 8rem;
-    height: 0.8rem;
-  }
+.dashboard__tab:hover {
+  color: $text-color;
+}
 
-  &__skeleton--title {
-    width: min(24rem, 70%);
-    height: 2.3rem;
-  }
+.dashboard__tab--placeholder {
+  min-width: 6.5rem;
+  min-height: 2.8rem;
+  pointer-events: none;
+}
 
-  &__skeleton--subtitle {
-    width: min(34rem, 88%);
-    height: 1rem;
-  }
+.dashboard__tab--active {
+  background: linear-gradient(135deg, $primary-color, #2080cd);
+  color: $text-color-light;
+  box-shadow: 0 12px 24px rgba(15, 108, 189, 0.22);
+}
 
-  &__skeleton--card {
-    height: 10rem;
-    border-radius: 1.2rem;
-  }
+.dashboard__tab-panel,
+.dashboard__loading-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 0.9rem;
+}
 
-  section {
-    p {
-      margin-bottom: 0.625rem;
-      line-height: 1.6;
-      color: $text-color;
-    }
+.dashboard__skeleton {
+  border-radius: 999px;
+  background: linear-gradient(
+    90deg,
+    rgba(203, 213, 225, 0.45),
+    rgba(255, 255, 255, 0.95),
+    rgba(203, 213, 225, 0.45)
+  );
+  background-size: 200% 100%;
+  animation: dashboard-skeleton 1.35s ease-in-out infinite;
+}
 
-    a {
-      color: $eco-color;
-      font-weight: 700;
-      text-decoration: none;
+.dashboard__skeleton--eyebrow {
+  width: 8rem;
+  height: 0.8rem;
+}
 
-      &:hover {
-        text-decoration: underline;
-      }
-    }
+.dashboard__skeleton--title {
+  width: min(24rem, 70%);
+  height: 2.3rem;
+}
+
+.dashboard__skeleton--subtitle {
+  width: min(34rem, 88%);
+  height: 1rem;
+}
+
+.dashboard__skeleton--card {
+  height: 10rem;
+  border-radius: $radius-lg;
+}
+
+@media (max-width: 900px) {
+  .dashboard__summary-grid {
+    grid-template-columns: 1fr;
   }
 }
 
-@media (max-width: 768px) {
-  .dashboard {
-    padding-top: 1.1rem;
+@media (max-width: 640px) {
+  .dashboard__hero {
+    padding: 1.1rem;
+  }
+
+  .dashboard__tab-list {
+    width: 100%;
+    border-radius: $radius-lg;
+  }
+
+  .dashboard__tab {
+    flex: 1 1 calc(50% - 0.5rem);
+    text-align: center;
   }
 }
 

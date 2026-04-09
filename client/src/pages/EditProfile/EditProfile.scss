@@ -1,50 +1,50 @@
 @import "../../Style/variables";
 
 .edit-profile {
-  width: min(1180px, calc(100% - 2rem));
-  margin: 0 auto;
-  padding: 1.75rem 0 3rem;
+  width: 100%;
+  padding-bottom: 1.5rem;
 }
 
 .edit-profile__hero {
-  margin-bottom: 1.25rem;
-  padding: 2rem 2.1rem;
-  border-radius: $radius-lg;
+  margin-bottom: 1rem;
+  padding: 1.6rem;
+  border-radius: $radius-xl;
   background:
-    radial-gradient(circle at top right, rgba(248, 220, 188, 0.18), transparent 22rem),
-    linear-gradient(135deg, rgba(58, 35, 24, 0.96), rgba(111, 70, 48, 0.92));
-  color: $text-color-light;
-  box-shadow: $shadow-lg;
+    radial-gradient(circle at top right, rgba(15, 108, 189, 0.12), transparent 18rem),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.98), rgba(248, 250, 252, 0.96));
+  border: 1px solid rgba(255, 255, 255, 0.8);
+  box-shadow: $shadow-md;
+}
 
-  h1 {
-    margin: 0;
-    font-family: $font-stack;
-    font-size: clamp(2rem, 4vw, 3.4rem);
-    line-height: 0.96;
-  }
+.edit-profile__hero h1 {
+  margin: 0;
+  font-size: clamp(1.9rem, 4vw, 3rem);
+  line-height: 0.98;
+  letter-spacing: -0.04em;
+  color: $text-color;
+}
 
-  p:last-child {
-    max-width: 42rem;
-    margin: 1rem 0 0;
-    color: rgba(255, 248, 241, 0.82);
-  }
+.edit-profile__hero p:last-child {
+  max-width: 42rem;
+  margin: 0.85rem 0 0;
+  color: $muted-text;
 }
 
 .edit-profile__eyebrow {
-  margin: 0 0 0.9rem;
-  font-size: 0.8rem;
-  letter-spacing: 0.18em;
+  margin: 0 0 0.75rem;
+  font-size: 0.74rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
   text-transform: uppercase;
-  color: rgba(255, 238, 220, 0.72);
+  color: $primary-color;
 }
 
 .edit-profile__card,
 .edit-profile__loading {
-  padding: 1.7rem;
-  border-radius: $radius-lg;
-  border: 1px solid rgba(255, 255, 255, 0.42);
-  background: $surface-primary;
-  backdrop-filter: blur(18px);
+  padding: 1.5rem;
+  border-radius: $radius-xl;
+  border: 1px solid rgba(255, 255, 255, 0.75);
+  background: rgba(255, 255, 255, 0.94);
   box-shadow: $shadow-md;
 }
 
@@ -58,33 +58,32 @@
   display: flex;
   flex-direction: column;
   gap: 0.55rem;
+}
 
-  span {
-    color: $muted-text;
-    font-size: 0.92rem;
-    font-weight: 700;
-  }
+.edit-profile__field span {
+  color: $muted-text;
+  font-size: 0.85rem;
+  font-weight: 700;
+}
 
-  input {
-    border: 1px solid rgba(16, 32, 51, 0.12);
-    background: rgba(255, 255, 255, 0.88);
-    border-radius: 0.95rem;
-    padding: 0.95rem 1rem;
-    font-size: inherit;
-    color: $text-color;
-    transition: border-color 0.18s ease, box-shadow 0.18s ease;
+.edit-profile__field input {
+  border: 1px solid $border-color;
+  background: $surface-primary;
+  border-radius: 0.95rem;
+  padding: 0.95rem 1rem;
+  font-size: inherit;
+  color: $text-color;
+}
 
-    &:focus {
-      outline: none;
-      border-color: rgba(139, 90, 60, 0.55);
-      box-shadow: 0 0 0 4px rgba(139, 90, 60, 0.12);
-    }
+.edit-profile__field input:focus {
+  outline: none;
+  border-color: rgba(15, 108, 189, 0.55);
+  box-shadow: 0 0 0 4px rgba(15, 108, 189, 0.12);
+}
 
-    &:disabled {
-      color: rgba(47, 32, 24, 0.78);
-      background: rgba(240, 231, 220, 0.82);
-    }
-  }
+.edit-profile__field input:disabled {
+  color: rgba(15, 23, 42, 0.72);
+  background: $surface-tertiary;
 }
 
 .edit-profile__field--full {
@@ -98,13 +97,13 @@
 }
 
 .edit-profile__message--error {
-  background: rgba(213, 83, 83, 0.09);
-  color: #8f2c2c;
+  background: $danger-soft;
+  color: $danger-color;
 }
 
 .edit-profile__message--success {
-  background: rgba(31, 143, 99, 0.1);
-  color: #1a6d4d;
+  background: $success-soft;
+  color: $success-color;
 }
 
 .edit-profile__actions {
@@ -120,19 +119,19 @@
   border-radius: 999px;
   padding: 0.95rem 1.2rem;
   font-size: inherit;
-  font-weight: 800;
+  font-weight: 700;
   cursor: pointer;
 }
 
 .edit-profile__primary {
-  background: linear-gradient(135deg, $eco-color1, $eco-color2);
+  background: linear-gradient(135deg, $primary-color, #2080cd);
   color: $text-color-light;
-  box-shadow: 0 14px 30px rgba(77, 48, 34, 0.18);
 }
 
 .edit-profile__secondary {
-  background: rgba(111, 70, 48, 0.09);
+  background: $surface-primary;
   color: $text-color;
+  border: 1px solid $border-color;
 }
 
 @media (max-width: 900px) {

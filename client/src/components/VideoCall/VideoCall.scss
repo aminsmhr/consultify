@@ -2,21 +2,20 @@
 
 .facetime-container {
   position: relative;
-  width: min(1180px, calc(100% - 2rem));
-  height: min(820px, calc(100dvh - 2rem));
-  margin: 1rem auto;
-  padding: 1.25rem;
-  border-radius: 2rem;
+  width: 100%;
+  height: min(820px, calc(100dvh - 10rem));
+  padding: 1rem;
+  border-radius: $radius-xl;
   overflow: hidden;
   background:
-    radial-gradient(circle at top right, rgba(244, 213, 179, 0.14), transparent 18rem),
-    linear-gradient(160deg, rgba(58, 35, 24, 0.96), rgba(93, 59, 41, 0.9));
+    radial-gradient(circle at top left, rgba(15, 108, 189, 0.18), transparent 16rem),
+    linear-gradient(160deg, #dfeaf6, #c7d9eb 45%, #9ebad8 100%);
   box-shadow: $shadow-lg;
 }
 
 .facetime-container__lobby {
   position: absolute;
-  inset: 1.25rem;
+  inset: 1rem;
   z-index: 1;
   display: flex;
   align-items: flex-start;
@@ -24,33 +23,34 @@
 }
 
 .facetime-container__lobby-copy {
-  max-width: 30rem;
+  max-width: 34rem;
   padding: 1.15rem 1.2rem;
   border-radius: 1.25rem;
-  background: rgba(41, 24, 17, 0.42);
-  color: $text-color-light;
+  background: rgba(255, 255, 255, 0.82);
+  color: $text-color;
   backdrop-filter: blur(10px);
+}
 
-  h1 {
-    margin: 0;
-    font-family: $font-stack;
-    font-size: clamp(1.6rem, 3vw, 2.5rem);
-    line-height: 1;
-  }
+.facetime-container__lobby-copy h1 {
+  margin: 0;
+  font-size: clamp(1.6rem, 3vw, 2.6rem);
+  line-height: 1;
+  letter-spacing: -0.03em;
+}
 
-  p {
-    margin: 0.9rem 0 0;
-    color: rgba(255, 247, 239, 0.8);
-  }
+.facetime-container__lobby-copy p {
+  margin: 0.9rem 0 0;
+  color: $muted-text;
 }
 
 .facetime-container__eyebrow {
   display: inline-block;
   margin-bottom: 0.8rem;
-  font-size: 0.78rem;
-  letter-spacing: 0.16em;
+  font-size: 0.74rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
   text-transform: uppercase;
-  color: rgba(255, 232, 212, 0.76);
+  color: $primary-color;
 }
 
 .video-style {
@@ -58,17 +58,7 @@
   height: 100%;
   object-fit: cover;
   border-radius: 1.5rem;
-  background: rgba(4, 10, 19, 0.9);
-}
-
-.video-style--local {
-  position: relative;
-  z-index: 0;
-}
-
-.video-style--remote {
-  position: relative;
-  z-index: 0;
+  background: #0f172a;
 }
 
 .local-video-style {
@@ -79,9 +69,9 @@
   aspect-ratio: 4 / 3;
   object-fit: cover;
   border-radius: 1.25rem;
-  border: 2px solid rgba(255, 255, 255, 0.3);
-  background: rgba(4, 10, 19, 0.92);
-  box-shadow: 0 1rem 2rem rgba(0, 0, 0, 0.28);
+  border: 2px solid rgba(255, 255, 255, 0.65);
+  background: #0f172a;
+  box-shadow: 0 1rem 2rem rgba(15, 23, 42, 0.22);
 }
 
 .local-video-style--hidden {
@@ -96,15 +86,16 @@
 .buttons-style {
   position: absolute;
   left: 50%;
-  bottom: 1.75rem;
+  bottom: 1.5rem;
   transform: translateX(-50%);
   display: flex;
   align-items: center;
   gap: 0.9rem;
   padding: 0.8rem 1rem;
   border-radius: 999px;
-  background: rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.82);
   backdrop-filter: blur(14px);
+  box-shadow: $shadow-md;
 }
 
 .call-button,
@@ -119,26 +110,18 @@
   font-size: 0.95rem;
   font-weight: 700;
   cursor: pointer;
-  transition: transform 160ms ease, filter 160ms ease;
-}
-
-.call-button:hover,
-.mute-button:hover,
-.end-button:hover {
-  transform: translateY(-1px);
-  filter: brightness(1.04);
 }
 
 .call-button {
-  background: linear-gradient(135deg, #28b47a, #1e8d61);
+  background: linear-gradient(135deg, #0f9d58, #0c7a44);
 }
 
 .mute-button {
-  background: rgba(255, 255, 255, 0.14);
+  background: linear-gradient(135deg, $primary-color, #2080cd);
 }
 
 .mute-button--muted {
-  background: linear-gradient(135deg, #f29f4b, #d97706);
+  background: linear-gradient(135deg, #d97706, #b45309);
 }
 
 .end-button {
@@ -147,23 +130,20 @@
 
 .facetime-container > p {
   position: absolute;
-  top: 1.5rem;
-  left: 1.5rem;
+  top: 1.2rem;
+  left: 1.2rem;
   z-index: 3;
   max-width: 28rem;
   margin: 0;
   padding: 0.9rem 1rem;
   border-radius: 1rem;
-  background: rgba(186, 53, 62, 0.18);
-  color: #fff4f4;
-  backdrop-filter: blur(10px);
+  background: rgba(255, 255, 255, 0.9);
+  color: $danger-color;
 }
 
 @media (max-width: 900px) {
   .facetime-container {
-    width: calc(100% - 1rem);
-    height: calc(100dvh - 1rem);
-    margin: 0.5rem auto;
+    height: calc(100dvh - 7rem);
     padding: 0.85rem;
     border-radius: 1.35rem;
   }

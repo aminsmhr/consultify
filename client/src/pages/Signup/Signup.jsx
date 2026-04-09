@@ -39,10 +39,10 @@ function Signup({ changeToLogin }) {
       <section className="signup-page__panel">
         <div className="signup-page__intro">
           <span className="signup-page__eyebrow">Create your workspace</span>
-          <h1>Bring consultants and clients into one polished session flow.</h1>
+          <h1>Bring consultants and clients into one structured collaboration hub.</h1>
           <p>
-            Launch a profile, pick a role, and start managing appointments with a sharper
-            visual experience from day one.
+            Launch a profile, pick a role, and start working in a cleaner interface inspired
+            by Microsoft productivity tools.
           </p>
         </div>
         <form className="signup" onSubmit={handleSubmit}>

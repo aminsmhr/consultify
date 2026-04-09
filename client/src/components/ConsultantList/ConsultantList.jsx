@@ -78,13 +78,17 @@ function ConsultantList({token, reload}) {
                 {appointments && appointments.length > 0 ? (
                     appointments.map((appointment, index) => (
                         <div key={appointment.appointmentId} className="striped-row">
-                            <p title={formatDate(appointment.appointmentDateTime)} className='row-data'>
-                                {appointment.consultantFirstName} {appointment.consultantLastName}
-                            </p>
-                            {/* Conditionally render the Join button or status message */}
+                            <div className='consultant-list__row-copy'>
+                              <p title={formatDate(appointment.appointmentDateTime)} className='row-data'>
+                                  {appointment.consultantFirstName} {appointment.consultantLastName}
+                              </p>
+                              <span className="consultant-list__row-meta">
+                                {formatDate(appointment.appointmentDateTime)}
+                              </span>
+                            </div>
                             {appointment.appointmentStatus == 'accepted' ? (
                                 <button className="book-appointment" onClick={() => joinAppointment(appointment.appointmentId)}>
-                                    Join
+                                    Join session
                                 </button>
                             ) : (
                                 <span className="status-message">
